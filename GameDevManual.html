@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero Drag: Developer's Handbook</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&family=Allura&display=swap');
+
+        :root {
+            --primary: #0f172a;
+            --accent: #3b82f6;
+            --code-bg: #1e293b;
+            --paper: #ffffff;
+            --text: #334155;
+            --border: #e2e8f0;
+        }
+
+        /* RESET & PRINT SETTINGS */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #525252;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            line-height: 1.5;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* PAGE CONTAINER (Strict A4) */
+        .page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm 15mm;
+            margin: 0 auto 20px auto;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            page-break-after: always;
+            page-break-inside: avoid;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* PAGE NUMBERS via CSS Counters */
+        body {
+            counter-reset: page-counter;
+        }
+
+        .page {
+            counter-increment: page-counter;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 10mm;
+            right: 15mm;
+            font-family: 'Inter', sans-serif;
+            font-size: 9pt;
+            color: #94a3b8;
+        }
+
+        .page-number::after {
+            content: "Page " counter(page-counter);
+        }
+
+        /* COVER PAGE SPECIAL STYLES */
+        .cover-page {
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%) !important;
+            color: white !important;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 1px solid #000;
+        }
+
+        .cover-page .page-number {
+            display: none;
+        }
+
+        /* Titles */
+        h1.main-title {
+            font-family: 'Cinzel', serif;
+            font-size: 64px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            letter-spacing: 4px;
+            opacity: 0.8;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+
+        .gaming-quote {
+            font-family: 'Allura', cursive;
+            font-size: 42px;
+            color: #60a5fa;
+            margin: 30px 0;
+            text-shadow: 0 0 15px rgba(96, 165, 250, 0.4);
+        }
+
+        /* Author Box */
+        .author-box {
+            margin-top: 80px;
+            padding: 15px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            width: 60%;
+        }
+
+        .by-line {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .author-name {
+            font-family: 'Cinzel', serif;
+            font-size: 22px;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        /* Content Headers */
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 22pt;
+            color: var(--primary);
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 8px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 14pt;
+            color: var(--accent);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+            font-size: 10pt;
+        }
+
+        /* Code Blocks - Tighter to fit */
+        pre {
+            background: var(--code-bg);
+            color: #e2e8f0;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 8pt;
+            line-height: 1.4;
+            overflow: visible;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border-left: 4px solid var(--accent);
+            margin: 12px 0;
+            page-break-inside: avoid;
+        }
+
+        /* Boxes */
+        .note-box {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-size: 9pt;
+            page-break-inside: avoid;
+        }
+
+        .note-title {
+            color: #1e40af;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 8pt;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .warning-box {
+            background-color: #fff1f2;
+            border-left: 4px solid #f43f5e;
+            padding: 12px;
+            margin: 15px 0;
+            font-size: 9pt;
+            page-break-inside: avoid;
+        }
+
+        .success-box {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 12px;
+            margin: 15px 0;
+            font-size: 9pt;
+            page-break-inside: avoid;
+        }
+
+        /* Syntax Color */
+        .k {
+            color: #c4b5fd;
+            font-weight: bold;
+        }
+
+        .t {
+            color: #6ee7b7;
+        }
+
+        .f {
+            color: #93c5fd;
+        }
+
+        .c {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .s {
+            color: #fca5a5;
+        }
+
+        .n {
+            color: #fbbf24;
+        }
+
+        ol,
+        ul {
+            font-size: 10pt;
+            margin-bottom: 12px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9pt;
+            margin: 15px 0;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 8px 10px;
+            text-align: left;
+        }
+
+        td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        /* PRINT MEDIA QUERY */
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+
+            body {
+                background: none;
+                padding: 0;
+                margin: 0;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .page {
+                margin: 0;
+                box-shadow: none;
+                width: 210mm;
+                min-height: 297mm;
+                page-break-after: always;
+                page-break-inside: avoid;
+                overflow: visible;
+                border: none;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= COVER PAGE ================= -->
+    <div class="page cover-page">
+        <div
+            style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%;">
+            <div class="subtitle">FPS GAME DEVELOPMENT ARCHIVES</div>
+            <h1 class="main-title">ZERO DRAG</h1>
+            <div class="gaming-quote">"Built to Learn, Built to Ship"</div>
+        </div>
+
+        <div class="author-box">
+            <div class="by-line">Created By</div>
+            <div class="author-name">Advik Rajput</div>
+        </div>
+
+        <div style="font-size: 9pt; opacity: 0.5; margin-top: 20px; font-family: 'Inter'; letter-spacing: 2px;">
+            POWERED BY UNITY ENGINE • FEB 2026 EDITION
+        </div>
+    </div>
+
+    <!-- ================= PAGE 2: INTRODUCTION ================= -->
+    <div class="page">
+        <h1>Introduction</h1>
+        <p>Welcome to the official technical documentation for <strong>Zero Drag</strong>. This document serves as a
+            comprehensive guide to every system, mechanic, and line of code that powers our first-person shooter game.
+        </p>
+
+        <p>This is not a copy-paste tutorial project. Every script has been hand-coded from scratch, with a focus on
+            understanding <strong>why</strong> each system works the way it does — from the physics of gravity to the
+            mathematics of hitscan shooting.</p>
+
+        <div class="note-box">
+            <span class="note-title">Project Philosophy</span>
+            The core philosophy of Zero Drag is <strong>"No Magic Numbers"</strong>. Every value in our codebase is
+            backed by real physics equations or intentional design choices. If a player jumps 2 meters, it's because
+            the kinematic equation calculated it — not because we guessed a force value.
+        </div>
+
+        <h2>Core Systems Overview</h2>
+        <p>This manual covers the seven pillars of our FPS gameplay loop:</p>
+        <ol>
+            <li><strong>Locomotion:</strong> Physics-based character movement using Unity's CharacterController.</li>
+            <li><strong>Camera Control:</strong> Mouse-driven look system with sensitivity and Euler angle clamping.
+            </li>
+            <li><strong>Quaternion Math:</strong> How Unity handles 3D rotation internally.</li>
+            <li><strong>Gravity Simulation:</strong> Frame-by-frame gravitational acceleration with reset logic.</li>
+            <li><strong>Ground Detection:</strong> Professional CheckSphere-based ground sensing with LayerMasks.</li>
+            <li><strong>Jump Physics:</strong> Kinematic equation-driven jumping for precise height control.</li>
+            <li><strong>Hitscan Shooting:</strong> Raycast-based bullet detection for instant-hit weapons.</li>
+        </ol>
+
+        <p>By the end of this manual, you will not only understand <em>how</em> these systems work but also <em>why</em>
+            they were built this way — and how to extend them further.</p>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 3: PLAYER MOVEMENT ================= -->
+    <div class="page">
+        <h1>Chapter 1: Locomotion</h1>
+        <p>The foundation of any FPS game is movement. In Zero Drag, we use Unity's <code>CharacterController</code>
+            component instead of a raw <code>Rigidbody</code>. This gives us precise control over collisions and
+            movement
+            without the slippery physics behavior that Rigidbody introduces.</p>
+
+        <h2>1.1 CharacterController vs Rigidbody</h2>
+
+        <table>
+            <tr>
+                <th>Feature</th>
+                <th>CharacterController</th>
+                <th>Rigidbody</th>
+            </tr>
+            <tr>
+                <td>Collision</td>
+                <td>Built-in, precise</td>
+                <td>Physics-driven, can be jittery</td>
+            </tr>
+            <tr>
+                <td>Gravity</td>
+                <td>Must code manually</td>
+                <td>Automatic</td>
+            </tr>
+            <tr>
+                <td>Movement Feel</td>
+                <td>Tight and responsive</td>
+                <td>Floaty and momentum-based</td>
+            </tr>
+            <tr>
+                <td>Best For</td>
+                <td>FPS / Platformers</td>
+                <td>Vehicles / Ragdolls</td>
+            </tr>
+        </table>
+
+        <p>We chose CharacterController because FPS games demand <strong>instant response</strong>. When you press W,
+            you
+            move forward immediately. Rigidbody would add momentum and drag, making the character feel like they're
+            walking
+            on ice.</p>
+
+        <h2>1.2 The Movement Vector</h2>
+        <p>To move the player, we read keyboard input and construct a <strong>direction vector</strong>:</p>
+
+        <pre>
+<span class="k">void</span> <span class="f">Move</span>()
+{
+    <span class="t">float</span> x = <span class="t">Input</span>.GetAxis(<span class="s">"Horizontal"</span>);
+    <span class="t">float</span> z = <span class="t">Input</span>.GetAxis(<span class="s">"Vertical"</span>);
+
+    <span class="t">Vector3</span> move = transform.right * x + transform.forward * z;
+    controller.Move(move * speed * <span class="t">Time</span>.deltaTime);
+}</pre>
+
+        <div class="note-box">
+            <span class="note-title">Why transform.right and transform.forward?</span>
+            These give us directions <strong>relative to the player</strong>, not the world. If the player is rotated
+            45 degrees, <code>transform.forward</code> points in THEIR forward direction — not the world's Z-axis.
+            This is what makes WASD movement work correctly regardless of where the player is looking.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 4: INPUT & DELTATIME ================= -->
+    <div class="page">
+        <h1>Chapter 1.2: Input & Time.deltaTime</h1>
+        <p>Understanding input and frame timing is critical before we go further. Two key concepts power every movement
+            system in Unity.</p>
+
+        <h2>Input.GetAxis — Smooth Input</h2>
+        <p><code>Input.GetAxis("Horizontal")</code> returns a value between <strong>-1</strong> and <strong>1</strong>:
+        </p>
+
+        <table>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+                <th>Direction</th>
+            </tr>
+            <tr>
+                <td>A / Left Arrow</td>
+                <td>-1</td>
+                <td>Left</td>
+            </tr>
+            <tr>
+                <td>Nothing pressed</td>
+                <td>0</td>
+                <td>No movement</td>
+            </tr>
+            <tr>
+                <td>D / Right Arrow</td>
+                <td>+1</td>
+                <td>Right</td>
+            </tr>
+        </table>
+
+        <p>The beauty of <code>GetAxis</code> is that it doesn't snap instantly between -1 and 1. It <strong>smoothly
+                ramps</strong> up and down, creating natural acceleration and deceleration. This is why movement feels
+            polished
+            out of the box.</p>
+
+        <h2>Time.deltaTime — Frame Independence</h2>
+        <p>Different computers run at different frame rates. A gaming PC might run at 144 FPS, while a laptop runs at 30
+            FPS.
+            Without <code>Time.deltaTime</code>, the player on the gaming PC would move <strong>4.8x faster</strong>!
+        </p>
+
+        <pre>
+<span class="c">// WITHOUT deltaTime (broken!):</span>
+controller.Move(move * speed);         <span class="c">// 144 FPS = 144 moves/sec = ZOOM</span>
+
+<span class="c">// WITH deltaTime (correct!):</span>
+controller.Move(move * speed * <span class="t">Time</span>.deltaTime); <span class="c">// Same speed on all PCs</span></pre>
+
+        <p><code>Time.deltaTime</code> is the time (in seconds) since the last frame. At 60 FPS, it's about
+            <strong>0.016
+                seconds</strong>. By multiplying movement by this value, we convert "distance per frame" into "distance
+            per
+            second" — making it frame-rate independent.
+        </p>
+
+        <div class="warning-box">
+            <strong>Golden Rule:</strong><br>
+            Any value that changes over time (movement, rotation, gravity) MUST be multiplied by
+            <code>Time.deltaTime</code>. Forgetting this is one of the most common beginner bugs.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 5: MOUSE LOOK HORIZONTAL ================= -->
+    <div class="page">
+        <h1>Chapter 2: Camera Control</h1>
+        <p>In a First-Person Shooter, "looking around" is split into <strong>two separate rotations</strong> applied to
+            two separate objects. This separation is the key to a working FPS camera.</p>
+
+        <h2>2.1 The Two-Object Split</h2>
+        <table>
+            <tr>
+                <th>Direction</th>
+                <th>What Rotates</th>
+                <th>Axis</th>
+            </tr>
+            <tr>
+                <td>Left / Right</td>
+                <td>Player Body</td>
+                <td>Y-axis</td>
+            </tr>
+            <tr>
+                <td>Up / Down</td>
+                <td>Camera (only)</td>
+                <td>X-axis</td>
+            </tr>
+        </table>
+
+        <p><strong>Why not rotate the camera for everything?</strong> If we only rotated the camera left/right, the
+            player's
+            body would stay facing one direction. When you walk forward with <code>transform.forward</code>, you'd move
+            in the
+            wrong direction — because the body never turned!</p>
+
+        <h2>2.2 Horizontal Rotation (Body)</h2>
+        <p>Mouse movement along the X-axis rotates the <strong>entire player body</strong>:</p>
+
+        <pre>
+<span class="t">float</span> mouseX = <span class="t">Input</span>.GetAxis(<span class="s">"Mouse X"</span>) * sensitivity * <span class="t">Time</span>.deltaTime;
+
+<span class="c">// Rotate the entire player body on Y-axis</span>
+transform.Rotate(<span class="t">Vector3</span>.up * mouseX);</pre>
+
+        <p><code>Input.GetAxis("Mouse X")</code> returns how far the mouse moved horizontally this frame. We multiply by
+            <code>sensitivity</code> so the player can control how fast they look around. A typical value is
+            <strong>200-400</strong>.
+        </p>
+
+        <div class="note-box">
+            <span class="note-title">Vector3.up</span>
+            <code>Vector3.up</code> is shorthand for <code>new Vector3(0, 1, 0)</code> — the world's Y-axis. Rotating
+            around this axis spins the player left and right, like a person standing on a turntable.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 6: MOUSE LOOK VERTICAL ================= -->
+    <div class="page">
+        <h1>Chapter 2.2: Vertical Look & The Exorcist Problem</h1>
+        <p>Vertical rotation (looking up and down) is more complex than horizontal. We can't simply use
+            <code>Rotate()</code> because there's no built-in way to <strong>limit</strong> how far the player can look.
+        </p>
+
+        <h2>The Problem: 360° Neck Spin</h2>
+        <p>Without clamping, if you keep moving the mouse upward, the camera will rotate past straight-up, over the top,
+            and behind the player — doing a full <strong>360 degree backflip</strong>. This breaks immersion completely.
+        </p>
+
+        <h2>The Solution: Manual Tracking + Clamp</h2>
+        <p>Instead of telling Unity "rotate by X amount," we track the total rotation ourselves and <strong>cap
+                it</strong>
+            between -90° and +90°:</p>
+
+        <pre>
+<span class="k">private</span> <span class="t">float</span> xRotation = <span class="n">0f</span>;
+
+<span class="k">void</span> <span class="f">mouseLook</span>()
+{
+    <span class="t">float</span> mouseY = <span class="t">Input</span>.GetAxis(<span class="s">"Mouse Y"</span>) * sensitivity * <span class="t">Time</span>.deltaTime;
+
+    <span class="c">// Step 1: Accumulate (subtract because Unity X-axis is inverted)</span>
+    xRotation -= mouseY;
+
+    <span class="c">// Step 2: Clamp between -90 (floor) and +90 (ceiling)</span>
+    xRotation = <span class="t">Mathf</span>.Clamp(xRotation, <span class="n">-90f</span>, <span class="n">90f</span>);
+
+    <span class="c">// Step 3: Apply to camera</span>
+    playerCamera.localRotation = <span class="t">Quaternion</span>.Euler(xRotation, <span class="n">0f</span>, <span class="n">0f</span>);
+}</pre>
+
+        <div class="warning-box">
+            <strong>Why subtract mouseY?</strong><br>
+            Unity's X-axis rotation is inverted. Moving the mouse UP gives a positive <code>mouseY</code> value,
+            but positive X-rotation points the camera DOWN. By subtracting, we flip it: mouse up = look up. ✓
+        </div>
+
+        <div class="note-box">
+            <span class="note-title">Why localRotation?</span>
+            We use <code>localRotation</code> (not <code>rotation</code>) because the camera is a <strong>child</strong>
+            of the player. "Local" means "relative to my parent." If we used world rotation, the camera would fight
+            against the player body's rotation and produce bizarre behavior.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 7: QUATERNION.EULER ================= -->
+    <div class="page">
+        <h1>Chapter 2.3: Understanding Quaternion.Euler</h1>
+        <p>This is one of the most confusing lines for beginners. Let's decode it completely:</p>
+
+        <pre>
+playerCamera.localRotation = <span class="t">Quaternion</span>.Euler(xRotation, <span class="n">0f</span>, <span class="n">0f</span>);</pre>
+
+        <h2>What is a Quaternion?</h2>
+        <p>A <strong>Quaternion</strong> is Unity's internal format for storing rotations. It uses four numbers (x, y,
+            z, w)
+            and is mathematically complex. Example: <code>Quaternion(0.7, 0, 0, 0.7)</code> — what does that even mean?
+            Nobody knows at a glance.</p>
+
+        <h2>What are Euler Angles?</h2>
+        <p><strong>Euler Angles</strong> are human-friendly rotations in simple degrees:</p>
+
+        <table>
+            <tr>
+                <th>Axis</th>
+                <th>Name</th>
+                <th>What It Does</th>
+            </tr>
+            <tr>
+                <td>X</td>
+                <td>Pitch</td>
+                <td>Looking up / down</td>
+            </tr>
+            <tr>
+                <td>Y</td>
+                <td>Yaw</td>
+                <td>Looking left / right</td>
+            </tr>
+            <tr>
+                <td>Z</td>
+                <td>Roll</td>
+                <td>Tilting head sideways</td>
+            </tr>
+        </table>
+
+        <h2>The Bridge: Quaternion.Euler()</h2>
+        <p>This function is a translator. It says:</p>
+        <p><em>"Give me simple degrees, and I'll convert them into the Quaternion format that Unity understands."</em>
+        </p>
+
+        <pre>
+<span class="c">// "Set camera to xRotation degrees on pitch, 0 on yaw, 0 on roll"</span>
+<span class="t">Quaternion</span>.Euler(xRotation, <span class="n">0f</span>, <span class="n">0f</span>);
+
+<span class="c">// We use = not +=</span>
+<span class="c">// This SETS the rotation to an exact value every frame</span>
+<span class="c">// because xRotation already contains the total accumulated angle</span></pre>
+
+        <div class="note-box">
+            <span class="note-title">Why = and not +=?</span>
+            We're using assignment (<code>=</code>), not addition. Every frame, we <strong>set</strong> the camera
+            rotation to the exact <code>xRotation</code> value. Since <code>xRotation</code> accumulates over time
+            (via <code>-= mouseY</code>), it always holds the current total angle.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 8: CURSOR LOCK ================= -->
+    <div class="page">
+        <h1>Chapter 2.4: Cursor Management</h1>
+        <p>In an FPS game, the mouse cursor must be invisible and locked to the center of the screen. Without this,
+            the cursor would fly off the game window, and clicking could interact with the desktop instead of shooting.
+        </p>
+
+        <h2>Locking the Cursor</h2>
+        <pre>
+<span class="k">void</span> <span class="f">Start</span>()
+{
+    <span class="t">Cursor</span>.lockState = <span class="t">CursorLockMode</span>.Locked;
+}</pre>
+
+        <p>This single line does three things:</p>
+        <ol>
+            <li><strong>Hides</strong> the cursor — it becomes invisible.</li>
+            <li><strong>Locks</strong> it to the center of the screen — it cannot leave the game window.</li>
+            <li><strong>Enables raw mouse delta</strong> — <code>Input.GetAxis("Mouse X/Y")</code> now reports pure
+                mouse movement, perfect for camera rotation.</li>
+        </ol>
+
+        <h2>Lock Modes</h2>
+        <table>
+            <tr>
+                <th>Mode</th>
+                <th>Behavior</th>
+                <th>Use Case</th>
+            </tr>
+            <tr>
+                <td><code>Locked</code></td>
+                <td>Hidden + centered</td>
+                <td>FPS gameplay</td>
+            </tr>
+            <tr>
+                <td><code>Confined</code></td>
+                <td>Visible but trapped in window</td>
+                <td>RTS games</td>
+            </tr>
+            <tr>
+                <td><code>None</code></td>
+                <td>Normal cursor</td>
+                <td>Menus / Pause screen</td>
+            </tr>
+        </table>
+
+        <div class="note-box">
+            <span class="note-title">Escape Key</span>
+            In the Unity Editor, pressing <strong>Escape</strong> unlocks the cursor automatically so you can
+            interact with the Inspector. In a built game, you would need to handle this manually (e.g., for a
+            pause menu).
+        </div>
+
+        <h2>Complete Mouse Look Script Structure</h2>
+        <pre>
+<span class="k">public</span> <span class="t">float</span> mouseSensitivity;
+<span class="k">private</span> <span class="t">float</span> xRotation;
+[<span class="t">SerializeField</span>] <span class="t">Transform</span> playerCamera;
+
+<span class="k">void</span> <span class="f">Start</span>() { <span class="t">Cursor</span>.lockState = <span class="t">CursorLockMode</span>.Locked; }
+
+<span class="k">void</span> <span class="f">mouseLook</span>()
+{
+    <span class="t">float</span> mouseX = <span class="t">Input</span>.GetAxis(<span class="s">"Mouse X"</span>) * sensitivity * <span class="t">Time</span>.deltaTime;
+    <span class="t">float</span> mouseY = <span class="t">Input</span>.GetAxis(<span class="s">"Mouse Y"</span>) * sensitivity * <span class="t">Time</span>.deltaTime;
+
+    transform.Rotate(<span class="t">Vector3</span>.up * mouseX);        <span class="c">// Body: left/right</span>
+    xRotation -= mouseY;                           <span class="c">// Track vertical</span>
+    xRotation = <span class="t">Mathf</span>.Clamp(xRotation, -90f, 90f); <span class="c">// Limit</span>
+    playerCamera.localRotation = <span class="t">Quaternion</span>.Euler(xRotation, 0f, 0f); <span class="c">// Apply</span>
+}</pre>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 9: GRAVITY THEORY ================= -->
+    <div class="page">
+        <h1>Chapter 3: Gravity Simulation</h1>
+        <p>Unlike Rigidbody, the CharacterController has <strong>no built-in gravity</strong>. We must simulate it
+            ourselves using real physics equations. This gives us full control over how falling feels in the game.</p>
+
+        <h2>3.1 How Gravity Works in Physics</h2>
+        <p>On Earth, gravity accelerates objects at <strong>9.81 m/s²</strong> downward. This means every second,
+            the falling speed increases by 9.81 m/s:</p>
+
+        <table>
+            <tr>
+                <th>Time</th>
+                <th>velocity.y</th>
+                <th>Feeling</th>
+            </tr>
+            <tr>
+                <td>0 seconds</td>
+                <td>0 m/s</td>
+                <td>Just stepped off the edge</td>
+            </tr>
+            <tr>
+                <td>1 second</td>
+                <td>-9.81 m/s</td>
+                <td>Falling</td>
+            </tr>
+            <tr>
+                <td>2 seconds</td>
+                <td>-19.62 m/s</td>
+                <td>Falling fast</td>
+            </tr>
+            <tr>
+                <td>3 seconds</td>
+                <td>-29.43 m/s</td>
+                <td>Terminal velocity approaching</td>
+            </tr>
+        </table>
+
+        <h2>3.2 Implementing in Code</h2>
+        <pre>
+<span class="k">public</span> <span class="t">float</span> gravity = <span class="n">-9.8f</span>;
+<span class="k">private</span> <span class="t">Vector3</span> velocity;
+
+<span class="c">// Every frame, gravity adds to the downward velocity</span>
+velocity.y += gravity * <span class="t">Time</span>.deltaTime;
+
+<span class="c">// Move the player by this velocity</span>
+controller.Move(velocity * <span class="t">Time</span>.deltaTime);</pre>
+
+        <p><code>velocity</code> is a <strong>Vector3</strong> with three components:</p>
+        <table>
+            <tr>
+                <th>Component</th>
+                <th>Controls</th>
+            </tr>
+            <tr>
+                <td>velocity.x</td>
+                <td>Left / Right falling (usually 0)</td>
+            </tr>
+            <tr>
+                <td>velocity.y</td>
+                <td>Up / Down — THIS is where gravity lives</td>
+            </tr>
+            <tr>
+                <td>velocity.z</td>
+                <td>Forward / Backward falling (usually 0)</td>
+            </tr>
+        </table>
+
+        <div class="warning-box">
+            <strong>Why += and not =?</strong><br>
+            Gravity is <strong>acceleration</strong>, not velocity. We <em>add</em> the acceleration each frame,
+            causing velocity to grow over time. This creates the natural "slow to fast" falling curve.
+            Using <code>=</code> would set a constant fall speed with no acceleration — like sinking in water.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 10: ROCKET FALL BUG ================= -->
+    <div class="page">
+        <h1>Chapter 3.2: The Rocket Fall Bug</h1>
+        <p>Our gravity code has a critical bug. While the player stands on the ground, gravity keeps running every
+            frame. The velocity accumulates silently:</p>
+
+        <pre>
+<span class="c">// Player standing on ground for 30 seconds...</span>
+<span class="c">// Frame 1:    velocity.y = -0.16</span>
+<span class="c">// Frame 100:  velocity.y = -16.0</span>
+<span class="c">// Frame 1800: velocity.y = -294.3  ← MASSIVE!</span>
+
+<span class="c">// Player walks off a ledge...</span>
+<span class="c">// WHOOOOSH! Shoots downward like a rocket! 🚀</span></pre>
+
+        <h2>The Fix: Gravity Reset</h2>
+        <pre>
+<span class="k">if</span> (isGrounded && velocity.y < <span class="n">0</span>)
+{
+    velocity.y = <span class="n">-2f</span>;
+}</pre>
+
+        <p>This checks two conditions with <code>&&</code> (AND):</p>
+        <table>
+            <tr>
+                <th>Condition</th>
+                <th>Why It's Needed</th>
+            </tr>
+            <tr>
+                <td><code>isGrounded</code></td>
+                <td>Confirms the player is on solid ground</td>
+            </tr>
+            <tr>
+                <td><code>velocity.y < 0</code></td>
+                <td>Confirms the player is FALLING, not jumping up</td>
+            </tr>
+        </table>
+
+        <p>Both conditions must be true. If we only checked <code>isGrounded</code>, the reset would fire on the
+            first frame of a jump (when the player hasn't left the ground yet), <strong>canceling the jump
+                immediately</strong>.</p>
+
+        <div class="warning-box">
+            <strong>Why -2f and not 0?</strong><br>
+            If we set velocity to 0, the player technically hovers micro-units above the floor. The
+            <code>isGrounded</code> check flickers between True and False every frame — causing bugs. A value of
+            <strong>-2f</strong> firmly pushes the player into the ground, ensuring consistent detection.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 11: GROUND DETECTION THEORY ================= -->
+    <div class="page">
+        <h1>Chapter 4: Ground Detection</h1>
+        <p>Knowing whether the player is on the ground is fundamental. It controls gravity reset, jump permission,
+            and landing effects. Unity provides a built-in solution, but it has problems.</p>
+
+        <h2>4.1 The Built-In Way (Unreliable)</h2>
+        <pre>
+isGrounded = controller.isGrounded; <span class="c">// ❌ Unreliable!</span></pre>
+
+        <p><code>CharacterController.isGrounded</code> only returns <code>true</code> if the controller's bottom sphere
+            is <strong>exactly touching</strong> a surface. Even a gap of 0.001 units returns <code>false</code>.</p>
+
+        <p>The result? Standing still on flat ground can report <code>false</code> — because the Skin Width property
+            creates a tiny invisible buffer between the capsule and the floor.</p>
+
+        <h2>4.2 The Professional Way: CheckSphere</h2>
+        <p>Instead of relying on Unity's built-in check, we create our own ground detector using
+            <code>Physics.CheckSphere</code>:
+        </p>
+
+        <pre>
+isGrounded = <span class="t">Physics</span>.CheckSphere(groundCheck.position, groundDistance, groundMask);</pre>
+
+        <p>This creates an invisible sphere at a defined point and checks if it overlaps with any ground objects:</p>
+
+        <table>
+            <tr>
+                <th>Argument</th>
+                <th>Value</th>
+                <th>Purpose</th>
+            </tr>
+            <tr>
+                <td><code>groundCheck.position</code></td>
+                <td>Player's feet position</td>
+                <td>WHERE to check</td>
+            </tr>
+            <tr>
+                <td><code>groundDistance</code></td>
+                <td>0.4 (radius)</td>
+                <td>HOW FAR to check</td>
+            </tr>
+            <tr>
+                <td><code>groundMask</code></td>
+                <td>Ground layer only</td>
+                <td>WHAT to detect</td>
+            </tr>
+        </table>
+
+        <div class="success-box">
+            <strong>Why CheckSphere is better:</strong> It has a configurable radius (0.4 units) which is forgiving
+            enough to detect ground even with small gaps. It also uses a LayerMask to only detect actual ground
+            surfaces, ignoring walls, enemies, and other objects.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 12: GROUND CHECK SETUP ================= -->
+    <div class="page">
+        <h1>Chapter 4.2: Ground Check Setup</h1>
+        <p>The CheckSphere approach requires a physical marker in the scene — an empty GameObject positioned at the
+            player's feet. This tells the code exactly where "down" is.</p>
+
+        <h2>Unity Hierarchy</h2>
+        <pre>
+Player (CharacterController + PlayerMovement script)
+├── Main Camera          <span class="c">← Eyes (position: Y = 0.8)</span>
+└── GroundCheck          <span class="c">← Feet (position: Y = -1)</span></pre>
+
+        <h2>LayerMask System</h2>
+        <p>Without a LayerMask, CheckSphere would detect <strong>everything</strong> — walls, enemies, pickups,
+            even the player itself. The LayerMask acts as a filter:</p>
+
+        <pre>
+<span class="k">public</span> <span class="t">LayerMask</span> groundMask;  <span class="c">// Set to "Ground" in Inspector</span>
+
+<span class="c">// Only objects on the "Ground" layer will trigger detection</span>
+<span class="t">Physics</span>.CheckSphere(pos, radius, groundMask);</pre>
+
+        <h2>Setup Steps</h2>
+        <ol>
+            <li>Create an <strong>Empty GameObject</strong> as a child of the Player.</li>
+            <li>Name it <strong>"GroundCheck"</strong> and set Position Y to <strong>-1</strong>.</li>
+            <li>In the Inspector, go to <strong>Layers → Add Layer</strong> and create <strong>"Ground"</strong>.</li>
+            <li>Select all floor/terrain objects and set their Layer to <strong>"Ground"</strong>.</li>
+            <li>On the Player script, set <strong>Ground Mask</strong> dropdown to <strong>"Ground"</strong>.</li>
+            <li>Drag the GroundCheck object into the <strong>groundCheck</strong> field.</li>
+        </ol>
+
+        <div class="note-box">
+            <span class="note-title">Professional Approach</span>
+            This is the same ground detection method used in AAA games. <code>controller.isGrounded</code> is
+            only used in quick prototypes and tutorials. Production games always use CheckSphere or Raycasts
+            for reliable ground detection.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 13: JUMP PHYSICS ================= -->
+    <div class="page">
+        <h1>Chapter 5: Physics-Based Jumping</h1>
+        <p>Most beginners implement jumping by adding a random force value:</p>
+        <pre>
+velocity.y = <span class="n">10f</span>;  <span class="c">// Magic number! How high does this go? Nobody knows.</span></pre>
+
+        <p>This is guesswork. In Zero Drag, we use <strong>real physics</strong> to calculate the exact initial velocity
+            needed to reach a specific height.</p>
+
+        <h2>5.1 The Kinematic Equation</h2>
+        <p>From physics (kinematic equation for displacement):</p>
+        <div
+            style="background: #f1f5f9; padding: 10px; text-align: center; border-radius: 4px; font-weight: bold; font-family: 'JetBrains Mono'; margin: 15px 0; font-size: 10pt;">
+            v² = u² + 2as → u = √(h × -2 × g)
+        </div>
+
+        <table>
+            <tr>
+                <th>Variable</th>
+                <th>Value</th>
+                <th>Meaning</th>
+            </tr>
+            <tr>
+                <td>v</td>
+                <td>0</td>
+                <td>Final velocity (zero at the peak — you stop rising)</td>
+            </tr>
+            <tr>
+                <td>u</td>
+                <td>?</td>
+                <td>Initial velocity (what we're solving for)</td>
+            </tr>
+            <tr>
+                <td>a</td>
+                <td>-9.81</td>
+                <td>Gravity (acceleration pulling down)</td>
+            </tr>
+            <tr>
+                <td>s</td>
+                <td>jumpHeight</td>
+                <td>How high we want to jump (in meters)</td>
+            </tr>
+        </table>
+
+        <h2>5.2 Implementation</h2>
+        <pre>
+<span class="k">public</span> <span class="t">float</span> jumpHeight = <span class="n">2f</span>;
+
+<span class="k">if</span> (<span class="t">Input</span>.GetButtonDown(<span class="s">"Jump"</span>) && isGrounded)
+{
+    velocity.y = <span class="t">Mathf</span>.Sqrt(jumpHeight * <span class="n">-2f</span> * gravity);
+}</pre>
+
+        <p><strong>Why this is superior:</strong> Set <code>jumpHeight = 2</code> in the Inspector, and the player jumps
+            exactly 2 meters. Set it to 3, they jump exactly 3 meters. The math handles everything — no trial and error.
+        </p>
+
+        <div class="note-box">
+            <span class="note-title">Why -2f × gravity?</span>
+            <code>gravity</code> is already negative (-9.8). Multiplying by <code>-2</code> makes it positive:
+            <code>-2 × -9.8 = 19.6</code>. We need a positive value inside <code>Sqrt()</code> because you
+            cannot take the square root of a negative number.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 14: COMPLETE GRAVITY SYSTEM ================= -->
+    <div class="page">
+        <h1>Chapter 5.2: Complete Gravity System</h1>
+        <p>Here is the full <code>handleGravity()</code> function with all components assembled in the correct order.
+            The order matters — each step depends on the previous one.</p>
+
+        <pre>
+<span class="k">void</span> <span class="f">handleGravity</span>()
+{
+    <span class="c">// Step 1: Check if player is on ground</span>
+    isGrounded = <span class="t">Physics</span>.CheckSphere(
+        groundCheck.position, groundDistance, groundMask);
+
+    <span class="c">// Step 2: Reset gravity if grounded and falling</span>
+    <span class="k">if</span> (isGrounded && velocity.y < <span class="n">0</span>)
+    {
+        velocity.y = <span class="n">-2f</span>;
+    }
+
+    <span class="c">// Step 3: Jump (only if grounded)</span>
+    <span class="k">if</span> (<span class="t">Input</span>.GetButtonDown(<span class="s">"Jump"</span>) && isGrounded)
+    {
+        velocity.y = <span class="t">Mathf</span>.Sqrt(jumpHeight * <span class="n">-2f</span> * gravity);
+    }
+
+    <span class="c">// Step 4: Apply gravity acceleration</span>
+    velocity.y += gravity * <span class="t">Time</span>.deltaTime;
+
+    <span class="c">// Step 5: Move the player</span>
+    controller.Move(velocity * <span class="t">Time</span>.deltaTime);
+}</pre>
+
+        <h2>Execution Flow Per Frame</h2>
+        <ol>
+            <li><strong>Ground Check</strong> — "Am I on solid ground?"</li>
+            <li><strong>Gravity Reset</strong> — If yes and falling, clamp velocity to -2</li>
+            <li><strong>Jump Check</strong> — If Space pressed and grounded, launch upward</li>
+            <li><strong>Gravity Pull</strong> — Add downward acceleration</li>
+            <li><strong>Apply Movement</strong> — Translate velocity into actual movement</li>
+        </ol>
+
+        <div class="warning-box">
+            <strong>Order Matters!</strong><br>
+            If you put the Jump check BEFORE the ground check, <code>isGrounded</code> wouldn't be updated yet
+            and the jump might not work. If you put gravity BEFORE the reset, the velocity could spike on the
+            frame the player lands.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 15: RAYCASTING THEORY ================= -->
+    <div class="page">
+        <h1>Chapter 6: Raycasting — Digital Vision</h1>
+        <p>In real life, you see objects because light bounces off them and enters your eyes. In a game engine,
+            we simulate this with <strong>Raycasting</strong> — projecting an invisible line to detect what it hits.</p>
+
+        <h2>6.1 How Raycasting Works</h2>
+        <p>A Raycast needs three things:</p>
+
+        <table>
+            <tr>
+                <th>Parameter</th>
+                <th>Meaning</th>
+                <th>In Our Game</th>
+            </tr>
+            <tr>
+                <td>Origin</td>
+                <td>Where the ray starts</td>
+                <td>Camera position (gun barrel)</td>
+            </tr>
+            <tr>
+                <td>Direction</td>
+                <td>Which way it travels</td>
+                <td>Camera forward (where player looks)</td>
+            </tr>
+            <tr>
+                <td>Max Distance</td>
+                <td>How far it can reach</td>
+                <td>100 meters (bullet range)</td>
+            </tr>
+        </table>
+
+        <pre>
+<span class="t">Ray</span> ray = <span class="k">new</span> <span class="t">Ray</span>(playerCamera.position, playerCamera.forward);
+<span class="t">RaycastHit</span> hit;
+
+<span class="k">if</span> (<span class="t">Physics</span>.Raycast(ray, <span class="k">out</span> hit, <span class="n">100f</span>))
+{
+    <span class="c">// Something was hit!</span>
+}</pre>
+
+        <h2>6.2 Hitscan vs Projectile</h2>
+        <p>There are two approaches to shooting in games:</p>
+
+        <table>
+            <tr>
+                <th>Method</th>
+                <th>How It Works</th>
+                <th>Games That Use It</th>
+            </tr>
+            <tr>
+                <td><strong>Hitscan</strong></td>
+                <td>Instant ray — hit detected in 1 frame</td>
+                <td>CS:GO, Valorant, COD</td>
+            </tr>
+            <tr>
+                <td><strong>Projectile</strong></td>
+                <td>Physical bullet object travels over time</td>
+                <td>Fortnite, TF2 Rocket Launcher</td>
+            </tr>
+        </table>
+
+        <p>Zero Drag uses <strong>Hitscan</strong>. When you click, the ray fires instantly and tells us what (if
+            anything) was hit. No bullet flies through the air — it's calculated mathematically in one frame.</p>
+
+        <div class="note-box">
+            <span class="note-title">Why Hitscan?</span>
+            For realistic guns (rifles, pistols), bullets travel at 700+ m/s. At that speed, projectile simulation
+            is unnecessary — the bullet would cross the entire map in 1-2 frames anyway. Hitscan is simpler and
+            more performant.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 16: RAYCASTHIT DATA ================= -->
+    <div class="page">
+        <h1>Chapter 6.2: Anatomy of a RaycastHit</h1>
+        <p>When a Raycast hits something, all the information about the impact is stored in a <code>RaycastHit</code>
+            struct. This is a treasure chest of data:</p>
+
+        <table>
+            <tr>
+                <th>Property</th>
+                <th>Type</th>
+                <th>What It Tells You</th>
+            </tr>
+            <tr>
+                <td><code>hit.point</code></td>
+                <td>Vector3</td>
+                <td>Exact world position where the ray hit (bullet hole location)</td>
+            </tr>
+            <tr>
+                <td><code>hit.collider</code></td>
+                <td>Collider</td>
+                <td>The collider component of the hit object</td>
+            </tr>
+            <tr>
+                <td><code>hit.collider.gameObject</code></td>
+                <td>GameObject</td>
+                <td>The actual GameObject that was hit</td>
+            </tr>
+            <tr>
+                <td><code>hit.distance</code></td>
+                <td>float</td>
+                <td>How far away the hit object was</td>
+            </tr>
+            <tr>
+                <td><code>hit.normal</code></td>
+                <td>Vector3</td>
+                <td>The surface angle at impact point (for sparks/decals)</td>
+            </tr>
+        </table>
+
+        <h2>The <code>out</code> Keyword</h2>
+        <pre>
+<span class="t">Physics</span>.Raycast(ray, <span class="k">out</span> hit, bulletRange);</pre>
+
+        <p>The <code>out</code> keyword is special in C#. It means:</p>
+        <p><em>"This function will FILL this variable with data. I'm giving you an empty box — you fill it."</em></p>
+
+        <p>Without <code>out</code>, the function couldn't write the hit data back to our variable. It's like
+            sending someone to investigate a crime scene and they come back with a detailed report (the RaycastHit).</p>
+
+        <h2>Using Hit Data</h2>
+
+        <pre>
+<span class="k">if</span> (<span class="t">Physics</span>.Raycast(ray, <span class="k">out</span> hit, bulletRange))
+{
+    <span class="c">// Log what we hit</span>
+    <span class="t">Debug</span>.Log(<span class="s">"Hit: "</span> + hit.collider.gameObject.name);
+
+    <span class="c">// Future: Spawn bullet hole at exact impact point</span>
+    <span class="c">// Instantiate(bulletHolePrefab, hit.point, Quaternion.LookRotation(hit.normal));</span>
+
+    <span class="c">// Future: Apply damage to enemy</span>
+    <span class="c">// hit.collider.GetComponent&lt;Enemy&gt;().TakeDamage(25);</span>
+}</pre>
+
+        <div class="note-box">
+            <span class="note-title">Building Blocks</span>
+            Right now we only log the hit. But this same RaycastHit data will power bullet holes, damage systems,
+            particle effects, and hit markers in future chapters. The foundation is solid.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 17: COMPLETE SHOOTING SCRIPT ================= -->
+    <div class="page">
+        <h1>Chapter 6.3: Complete Shooting Script</h1>
+        <p>Here is the full <code>GunShot.cs</code> script with every line explained:</p>
+
+        <pre>
+<span class="k">using</span> UnityEngine;
+
+<span class="k">public class</span> <span class="t">GunShot</span> : <span class="t">MonoBehaviour</span>
+{
+    [<span class="t">SerializeField</span>] <span class="t">Transform</span> playerCamera;
+    <span class="k">public</span> <span class="t">float</span> bulletRange = <span class="n">100f</span>;
+
+    <span class="k">void</span> <span class="f">Update</span>()
+    {
+        <span class="c">// "Fire1" = Left Mouse Button (Unity default)</span>
+        <span class="k">if</span> (<span class="t">Input</span>.GetButtonDown(<span class="s">"Fire1"</span>))
+        {
+            Shoot();
+        }
+    }
+
+    <span class="k">void</span> <span class="f">Shoot</span>()
+    {
+        <span class="c">// Create invisible ray from camera center</span>
+        <span class="t">Ray</span> ray = <span class="k">new</span> <span class="t">Ray</span>(playerCamera.position, playerCamera.forward);
+        <span class="t">RaycastHit</span> hit;
+
+        <span class="c">// Fire ray up to bulletRange meters</span>
+        <span class="k">if</span> (<span class="t">Physics</span>.Raycast(ray, <span class="k">out</span> hit, bulletRange))
+        {
+            <span class="t">Debug</span>.Log(<span class="s">"Hit: "</span> + hit.collider.gameObject.name);
+        }
+    }
+}</pre>
+
+        <h2>Script Architecture Notes</h2>
+        <ul>
+            <li><strong>Separate Script:</strong> Shooting is in <code>GunShot.cs</code>, not in
+                <code>PlayerMovement.cs</code>.
+                This follows the <strong>Single Responsibility Principle</strong> — each script does one job.
+            </li>
+            <li><strong>GetButtonDown vs GetButton:</strong> <code>GetButtonDown</code> fires once per click.
+                <code>GetButton</code> fires every frame while held (useful for automatic weapons later).
+            </li>
+            <li><strong>[SerializeField]:</strong> Exposes private variables in the Inspector without making them
+                public. Better encapsulation than using <code>public</code>.</li>
+        </ul>
+
+        <div class="success-box">
+            <strong>What We've Built:</strong> A complete FPS foundation — movement, camera, gravity, ground detection,
+            jumping, and hitscan shooting. Every system is hand-coded with real physics. This is the skeleton that
+            every future feature (damage, AI, weapons, UI) will be built upon.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 18: CONCLUSION ================= -->
+    <div class="page">
+        <h1>Conclusion & Roadmap</h1>
+        <p>You have now built the core framework of <strong>Zero Drag</strong>. This is not just a collection of
+            scripts; it is a scalable architecture ready for a full game.</p>
+
+        <h2>Systems Completed</h2>
+        <table>
+            <tr>
+                <th>System</th>
+                <th>Script</th>
+                <th>Key Concept</th>
+            </tr>
+            <tr>
+                <td>Movement</td>
+                <td>PlayerMovement.cs</td>
+                <td>CharacterController + transform directions</td>
+            </tr>
+            <tr>
+                <td>Camera</td>
+                <td>PlayerMovement.cs</td>
+                <td>Euler clamping + Quaternion conversion</td>
+            </tr>
+            <tr>
+                <td>Gravity</td>
+                <td>PlayerMovement.cs</td>
+                <td>Frame-by-frame acceleration + reset</td>
+            </tr>
+            <tr>
+                <td>Ground Check</td>
+                <td>PlayerMovement.cs</td>
+                <td>CheckSphere + LayerMask filtering</td>
+            </tr>
+            <tr>
+                <td>Jumping</td>
+                <td>PlayerMovement.cs</td>
+                <td>Kinematic equation: √(h × -2 × g)</td>
+            </tr>
+            <tr>
+                <td>Shooting</td>
+                <td>GunShot.cs</td>
+                <td>Hitscan Raycasting + RaycastHit data</td>
+            </tr>
+        </table>
+
+        <h2>Future Development Modules</h2>
+        <ul>
+            <li><strong>Module 7:</strong> Damage System — Enemy health, hit detection, death logic.</li>
+            <li><strong>Module 8:</strong> Crosshair & HUD — Aim indicator, ammo counter, health bar.</li>
+            <li><strong>Module 9:</strong> Weapon System — Multiple guns, switching, reloading.</li>
+            <li><strong>Module 10:</strong> Muzzle Flash & Sound — Visual and audio feedback on fire.</li>
+            <li><strong>Module 11:</strong> Enemy AI — Patrol, chase, attack behaviors.</li>
+            <li><strong>Module 12:</strong> Story System — Dialogue, cutscenes, mission objectives.</li>
+            <li><strong>Module 13:</strong> Post-Processing — Bloom, vignette, color grading.</li>
+            <li><strong>Module 14:</strong> Level Design — Environment building and optimization.</li>
+        </ul>
+
+        <div style="margin-top: 60px; text-align: center; opacity: 0.5;">
+            <p>ZERO DRAG<br>Development Log • Feb 2026</p>
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <div class="no-print" style="position: fixed; bottom: 30px; right: 30px;">
+        <button onclick="window.print()"
+            style="padding: 15px 30px; background: #3b82f6; color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 16px;">Download
+            Full PDF 📄</button>
+    </div>
+
+</body>
+
+</html>
