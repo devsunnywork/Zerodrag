@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero Drag - Daily Dev Log</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&family=Allura&display=swap');
+
+        :root {
+            --primary: #0f172a;
+            --accent: #3b82f6;
+            --secondary-text: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #525252;
+            margin: 0;
+            padding: 40px;
+            font-family: 'Inter', sans-serif;
+            color: #334155;
+            line-height: 1.6;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm 25mm;
+            margin: 0 auto 30px auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .header-left h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 2px;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        .header-left .subtitle {
+            font-size: 11px;
+            color: var(--secondary-text);
+            letter-spacing: 1px;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        .header-right {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--secondary-text);
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--accent);
+            padding-left: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* FIXED TEXT AREA CSS */
+        .editable-area {
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            font-size: 11pt;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.8;
+            /* Increased line height for readability */
+            outline: none;
+            white-space: pre-line;
+            /* Collapses indentation, keeps newlines */
+            border-radius: 4px;
+            color: #334155;
+            background-color: #fafafa;
+        }
+
+        .editable-area:focus {
+            border-color: var(--accent);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .quote-footer {
+            margin-top: auto;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        .gaming-quote {
+            font-family: 'Allura', cursive;
+            font-size: 28px;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .meta-footer {
+            font-size: 9px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            background-color: black;
+        }
+
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .page {
+                box-shadow: none;
+                margin: 0;
+                width: 210mm;
+                min-height: 297mm;
+                border: none;
+            }
+
+            .controls {
+                display: none;
+            }
+
+            .editable-area {
+                border: none;
+                padding: 0;
+                background: none;
+                resize: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page">
+        <header>
+            <div class="header-left">
+                <h1>Daily Dev Log</h1>
+                <div class="subtitle">Zero Drag Project Archive</div>
+            </div>
+            <div class="header-right">
+                DATE: <span id="current-date">--</span><br>
+                TIME: <span id="current-time">--</span>
+            </div>
+        </header>
+
+        <div class="section">
+            <div class="section-title">✅ Today's Achievements</div>
+            <div class="editable-area" contenteditable="true">1. Built FPS Player Movement System (WASD with
+                CharacterController).
+                2. Implemented Mouse Look with Euler Angle Clamping (-90° to +90°).
+                3. Added Cursor Locking for FPS Camera Control.
+                4. Created Physics-Based Gravity System with Frame Accumulation.
+                5. Implemented Custom Ground Detection using Physics.CheckSphere + LayerMask.
+                6. Built Physics Jump using Kinematic Equation: v = √(h × -2 × g).
+                7. Developed Hitscan Shooting System with Raycasting (GunShot.cs).
+                8. Rewrote Game Dev Manual (18 Pages) with all new FPS mechanics.
+                9. Renamed project from "Void Room" to "Zero Drag".</div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">🧠 Key Learnings</div>
+            <div class="editable-area" contenteditable="true">CharacterController vs Rigidbody: Why CC gives tighter FPS
+                movement.
+                transform.right / transform.forward: Relative directions for player movement.
+                Euler Angles: Human-readable X/Y/Z degree rotations.
+                Quaternion.Euler(): Bridge between human degrees and Unity's internal rotation format.
+                localRotation vs rotation: Why child objects need local rotation.
+                Time.deltaTime: Frame-rate independence — same speed on all PCs.
+                Gravity Accumulation: velocity.y += gravity * deltaTime (acceleration, not constant speed).
+                The -2f Reset: Why velocity resets to -2 and not 0 (prevents isGrounded flickering).
+                Physics.CheckSphere: Professional ground detection replacing unreliable controller.isGrounded.
+                LayerMask Filtering: Detect only specific layers, ignore everything else.
+                Kinematic Equation: v² = u² + 2as → solving for initial jump velocity.
+                Raycasting (Hitscan): Invisible ray from camera to detect hits in a single frame.
+                RaycastHit Struct: Extracting point, collider, distance, and normal from hits.
+                The "out" Keyword: How C# returns data through function parameters.</div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">🚧 Challenges & Fixes</div>
+            <div class="editable-area" contenteditable="true">Challenge: Camera rotating 360° vertically (Exorcist bug).
+                Fix: Tracked xRotation manually and clamped between -90° and +90° using Mathf.Clamp.
+
+                Challenge: Player rocketing downward after standing still (Rocket Fall bug).
+                Fix: Reset velocity.y to -2f when grounded and falling (not 0, to maintain ground contact).
+
+                Challenge: controller.isGrounded returning false even on flat ground.
+                Fix: Replaced with Physics.CheckSphere at player's feet with 0.4 radius and LayerMask.
+
+                Challenge: Mouse Y inverted (mouse up = look down).
+                Fix: Used subtraction (xRotation -= mouseY) to flip the axis correctly.</div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">📝 Plan for Tomorrow</div>
+            <div class="editable-area" contenteditable="true">1. Damage System: Give enemies health, deal damage on
+                raycast hit.
+                2. Crosshair UI: Add aim indicator at screen center.
+                3. Muzzle Flash & Sound: Visual and audio feedback on shooting.
+                4. Enemy AI: Basic patrol, chase, and attack behaviors.
+                5. Weapon System: Multiple guns, switching, and reloading mechanics.</div>
+        </div>
+
+        <div class="quote-footer">
+            <div class="gaming-quote">"Making Ideas Playable"</div>
+            <div class="meta-footer">
+                Logged by Advik Rajput • Antigravity Assist
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" onclick="window.print()">Download PDF 📄</button>
+    </div>
+
+    <script>
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('current-date').innerText = now.toLocaleDateString('en-US', options).toUpperCase();
+        document.getElementById('current-time').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    </script>
+</body>
+
+</html>
