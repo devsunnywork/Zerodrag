@@ -37,15 +37,17 @@
         .page {
             background: white;
             width: 210mm;
-            min-height: 297mm;
+            height: 297mm;
+            max-height: 297mm;
             padding: 20mm 15mm;
             margin: 0 auto 20px auto;
             position: relative;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             page-break-after: always;
-            page-break-inside: avoid;
+            page-break-inside: auto;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         /* PAGE NUMBERS via CSS Counters */
@@ -180,7 +182,7 @@
             word-wrap: break-word;
             border-left: 4px solid var(--accent);
             margin: 12px 0;
-            page-break-inside: avoid;
+            page-break-inside: auto;
         }
 
         /* Boxes */
@@ -191,7 +193,7 @@
             margin: 15px 0;
             border-radius: 4px;
             font-size: 9pt;
-            page-break-inside: avoid;
+            page-break-inside: auto;
         }
 
         .note-title {
@@ -209,7 +211,7 @@
             padding: 12px;
             margin: 15px 0;
             font-size: 9pt;
-            page-break-inside: avoid;
+            page-break-inside: auto;
         }
 
         .success-box {
@@ -218,7 +220,7 @@
             padding: 12px;
             margin: 15px 0;
             font-size: 9pt;
-            page-break-inside: avoid;
+            page-break-inside: auto;
         }
 
         /* Syntax Color */
@@ -300,10 +302,11 @@
                 margin: 0;
                 box-shadow: none;
                 width: 210mm;
-                min-height: 297mm;
+                height: 297mm;
+                max-height: 297mm;
                 page-break-after: always;
-                page-break-inside: avoid;
-                overflow: visible;
+                page-break-inside: auto;
+                overflow: hidden;
                 border: none;
             }
 

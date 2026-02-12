@@ -211,60 +211,65 @@
 
         <div class="section">
             <div class="section-title">✅ Today's Achievements</div>
-            <div class="editable-area" contenteditable="true">1. Built FPS Player Movement System (WASD with
-                CharacterController).
-                2. Implemented Mouse Look with Euler Angle Clamping (-90° to +90°).
-                3. Added Cursor Locking for FPS Camera Control.
-                4. Created Physics-Based Gravity System with Frame Accumulation.
-                5. Implemented Custom Ground Detection using Physics.CheckSphere + LayerMask.
-                6. Built Physics Jump using Kinematic Equation: v = √(h × -2 × g).
-                7. Developed Hitscan Shooting System with Raycasting (GunShot.cs).
-                8. Rewrote Game Dev Manual (18 Pages) with all new FPS mechanics.
-                9. Renamed project from "Void Room" to "Zero Drag".</div>
+            <div class="editable-area" contenteditable="true">1. Implemented Enemy Health & Damage System
+                (EnemyHealth.cs with TakeDamage function).
+                2. Created Fractured Destruction Physics (Instantiate broken prefab + AddExplosionForce).
+                3. Built Singleton Score Manager (ScoreManager.cs with static instance pattern).
+                4. Added Kill Counter & Enemies Left UI (Two separate TextMeshPro elements).
+                5. Implemented Impact Spark Effects (Instantiate at hit.point with hit.normal rotation).
+                6. Fixed Audio Overlap Bug (Switched from Play() to PlayOneShot()).
+                7. Resolved Player Rotation Bug (Removed Time.deltaTime from Mouse Input).
+                8. Expanded Game Dev Manual to 22 Pages (Added Modules 7 & 8 with deep technical details).
+                9. Fixed PDF Pagination Issue (Changed min-height to fixed height with overflow hidden).
+                10. Pushed 7 Commits to GitHub (All FPS core systems now version-controlled).</div>
         </div>
 
         <div class="section">
             <div class="section-title">🧠 Key Learnings</div>
-            <div class="editable-area" contenteditable="true">CharacterController vs Rigidbody: Why CC gives tighter FPS
-                movement.
-                transform.right / transform.forward: Relative directions for player movement.
-                Euler Angles: Human-readable X/Y/Z degree rotations.
-                Quaternion.Euler(): Bridge between human degrees and Unity's internal rotation format.
-                localRotation vs rotation: Why child objects need local rotation.
-                Time.deltaTime: Frame-rate independence — same speed on all PCs.
-                Gravity Accumulation: velocity.y += gravity * deltaTime (acceleration, not constant speed).
-                The -2f Reset: Why velocity resets to -2 and not 0 (prevents isGrounded flickering).
-                Physics.CheckSphere: Professional ground detection replacing unreliable controller.isGrounded.
-                LayerMask Filtering: Detect only specific layers, ignore everything else.
-                Kinematic Equation: v² = u² + 2as → solving for initial jump velocity.
-                Raycasting (Hitscan): Invisible ray from camera to detect hits in a single frame.
-                RaycastHit Struct: Extracting point, collider, distance, and normal from hits.
-                The "out" Keyword: How C# returns data through function parameters.</div>
+            <div class="editable-area" contenteditable="true">GetComponent&lt;T&gt;: How to find and call functions on
+                other scripts via Raycast hits.
+                Null Checks: Why "if (enemy != null)" prevents NullReferenceException crashes.
+                Public Functions: Why TakeDamage() must be public for cross-script communication.
+                Instantiate + Destroy: The "Fake Switch" technique for performant destruction effects.
+                AddExplosionForce: How Unity calculates vectors from center to push rigidbodies outward.
+                GetComponentsInChildren: Finding all rigidbodies in a prefab's hierarchy.
+                Singleton Pattern: Using "public static instance" for global manager access.
+                Static vs Instance Variables: Static belongs to the class, instance belongs to objects.
+                Awake() vs Start(): Awake runs first, ensuring Singleton is ready before any Start().
+                FindGameObjectsWithTag: Automated enemy counting without manual Inspector assignment.
+                TextMeshPro Integration: Using TMPro.TextMeshProUGUI for dynamic UI updates.
+                hit.normal: The perpendicular vector to surfaces for correct spark orientation.
+                Quaternion.LookRotation: Converting direction vectors into rotation for particle alignment.
+                Destroy(obj, delay): Timed cleanup to prevent particle system memory leaks.
+                PlayOneShot vs Play: PlayOneShot allows sound overlap for rapid firing.</div>
         </div>
 
         <div class="section">
             <div class="section-title">🚧 Challenges & Fixes</div>
-            <div class="editable-area" contenteditable="true">Challenge: Camera rotating 360° vertically (Exorcist bug).
-                Fix: Tracked xRotation manually and clamped between -90° and +90° using Mathf.Clamp.
+            <div class="editable-area" contenteditable="true">Challenge: Gun sounds cutting off during rapid fire.
+                Fix: Replaced gunSound.Play() with gunSound.PlayOneShot(gunSound.clip) to allow overlapping audio.
 
-                Challenge: Player rocketing downward after standing still (Rocket Fall bug).
-                Fix: Reset velocity.y to -2f when grounded and falling (not 0, to maintain ground contact).
+                Challenge: Player camera "swinging" in circles when looking around.
+                Fix: Removed Time.deltaTime from Mouse X/Y input and ensured camera Z position is 0.
 
-                Challenge: controller.isGrounded returning false even on flat ground.
-                Fix: Replaced with Physics.CheckSphere at player's feet with 0.4 radius and LayerMask.
+                Challenge: Impact sparks spawning at wrong angles.
+                Fix: Used Quaternion.LookRotation(hit.normal) to align particles perpendicular to surfaces.
 
-                Challenge: Mouse Y inverted (mouse up = look down).
-                Fix: Used subtraction (xRotation -= mouseY) to flip the axis correctly.</div>
+                Challenge: Score UI showing "0" enemies even with cubes in scene.
+                Fix: Tagged all enemy cubes with "Enemy" tag so FindGameObjectsWithTag could locate them.
+
+                Challenge: PDF manual creating 32 pages instead of 22.
+                Fix: Changed .page CSS from min-height to fixed height: 297mm with overflow: hidden.</div>
         </div>
 
         <div class="section">
             <div class="section-title">📝 Plan for Tomorrow</div>
-            <div class="editable-area" contenteditable="true">1. Damage System: Give enemies health, deal damage on
-                raycast hit.
-                2. Crosshair UI: Add aim indicator at screen center.
-                3. Muzzle Flash & Sound: Visual and audio feedback on shooting.
-                4. Enemy AI: Basic patrol, chase, and attack behaviors.
-                5. Weapon System: Multiple guns, switching, and reloading mechanics.</div>
+            <div class="editable-area" contenteditable="true">1. Muzzle Flash: Add Light + Particle effect at gun tip
+                when shooting.
+                2. Enemy AI: Basic NavMesh patrol and player chase behavior.
+                3. Weapon System: Multiple guns with switching, ammo, and reload mechanics.
+                4. Health Bar UI: Player health display with damage feedback.
+                5. Level Design: Build first playable environment with cover and objectives.</div>
         </div>
 
         <div class="quote-footer">
