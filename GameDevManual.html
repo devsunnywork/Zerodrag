@@ -364,6 +364,9 @@
             <li><strong>Ground Detection:</strong> Professional CheckSphere-based ground sensing with LayerMasks.</li>
             <li><strong>Jump Physics:</strong> Kinematic equation-driven jumping for precise height control.</li>
             <li><strong>Hitscan Shooting:</strong> Raycast-based bullet detection for instant-hit weapons.</li>
+            <li><strong>Damage Systems:</strong> Implementing health and hit-triggered logic for enemies.</li>
+            <li><strong>Fractured Destruction:</strong> Using physics to shatter objects into pieces on death.</li>
+            <li><strong>Singleton Manager:</strong> Centralized score tracking using the Singleton pattern.</li>
         </ol>
 
         <p>By the end of this manual, you will not only understand <em>how</em> these systems work but also <em>why</em>
@@ -1288,7 +1291,288 @@ velocity.y = <span class="n">10f</span>;  <span class="c">// Magic number! How h
         <div class="page-number"></div>
     </div>
 
-    <!-- ================= PAGE 18: CONCLUSION ================= -->
+    <!-- ================= PAGE 18: CHAPTER 7 - DAMAGE SYSTEM ================= -->
+    <div class="page">
+        <h1>Chapter 7: Damage & Hit Detection</h1>
+        <p>In this chapter, we move beyond simple raycasting and implement a functional <strong>Damage System</strong>.
+            This is the first time two different scripts (<code>GunShot.cs</code> and <code>EnemyHealth.cs</code>)
+            start talking to each other.</p>
+
+        <h2>7.1 Interaction via GetComponent</h2>
+        <p>Our Raycast gives us a <code>HitInfo</code> object. From this, we can extract the "identity" of
+            the object we hit using <code>GetComponent</code>. This is the foundation of all game interaction.</p>
+
+        <pre>
+<span class="c">// Step 1: Check if the object we hit has health</span>
+<span class="t">EnemyHealth</span> enemy = hit.collider.GetComponent&lt;<span class="t">EnemyHealth</span>&gt;();
+
+<span class="c">// Step 2: Safety Check (Null Check)</span>
+<span class="k">if</span> (enemy != <span class="k">null</span>)
+{
+    <span class="c">// Step 3: Trigger the damage function</span>
+    enemy.<span class="f">TakeDamage</span>(damage);
+}</pre>
+
+        <h2>Deep Dive: The Null Check</h2>
+        <p>Why do we check if <code>enemy != null</code>? If we shoot a wall or a floor, they won't have
+            an <code>EnemyHealth</code> script. If we try to call <code>TakeDamage()</code> on something
+            that doesn't have it, Unity will crash with a <strong>NullReferenceException</strong>.
+            Always protect your code with these safety checks.</p>
+
+        <h2>The EnemyHealth Script</h2>
+        <p>Here's the complete damage-receiving script that lives on every enemy:</p>
+        <pre>
+<span class="k">public class</span> <span class="t">EnemyHealth</span> : <span class="t">MonoBehaviour</span> {
+    <span class="k">public</span> <span class="t">float</span> health = <span class="n">100f</span>;
+    <span class="k">public</span> <span class="t">GameObject</span> brokenVersion;
+
+    <span class="k">public void</span> <span class="f">TakeDamage</span>(<span class="t">float</span> damage) {
+        health -= damage;
+        <span class="k">if</span> (health <= <span class="n">0</span>) {
+            <span class="f">Die</span>();
+        }
+    }
+
+    <span class="k">void</span> <span class="f">Die</span>() {
+        <span class="c">// Notify the score system</span>
+        <span class="t">ScoreManager</span>.instance.<span class="f">EnemyKilled</span>();
+        <span class="c">// Spawn the broken version and explode</span>
+        <span class="t">GameObject</span> broken = <span class="f">Instantiate</span>(brokenVersion, transform.position, transform.rotation);
+        <span class="t">Rigidbody</span>[] rbs = broken.GetComponentsInChildren&lt;<span class="t">Rigidbody</span>&gt;();
+        <span class="k">foreach</span>(<span class="t">Rigidbody</span> rb <span class="k">in</span> rbs) {
+            rb.<span class="f">AddExplosionForce</span>(<span class="n">500f</span>, transform.position, <span class="n">5f</span>);
+        }
+        <span class="f">Destroy</span>(gameObject);
+    }
+}</pre>
+
+        <div class="note-box">
+            <span class="note-title">Why public TakeDamage?</span>
+            The function must be <code>public</code> so other scripts (like GunShot) can call it.
+            This is the entire reason we use <code>GetComponent</code> — to find this specific function.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 19: CHAPTER 7.2 - FRACTURE PHYSICS ================= -->
+    <div class="page">
+        <h1>Chapter 7.2: Fractured Destruction</h1>
+        <p>One of the most satisfying parts of Zero Drag is the <strong>Shatter Effect</strong>. Instead
+            of an object just "poofing" out of existence, we simulate a physical explosion.</p>
+
+        <h2>The "Fake Switch" Technique</h2>
+        <p>To keep the game running fast while looking premium, we use a technique called the
+            <strong>Instant Swap</strong>. We have two models at the same location:
+        </p>
+        <ol>
+            <li><strong>Live Mesh:</strong> A single solid cube (low performance cost).</li>
+            <li><strong>Broken Prefab:</strong> A collection of 8-15 smaller cubes, each with its own Rigidbody.</li>
+        </ol>
+
+        <h2>The Physics Breakdown</h2>
+        <pre>
+<span class="k">void</span> <span class="f">Die</span>() {
+    <span class="c">// 1. Spawn the shards</span>
+    <span class="t">GameObject</span> broken = <span class="f">Instantiate</span>(brokenVersion, transform.position, transform.rotation);
+
+    <span class="c">// 2. Find all rigidbodies in the children</span>
+    <span class="t">Rigidbody</span>[] rbs = broken.GetComponentsInChildren&lt;<span class="t">Rigidbody</span>&gt;();
+
+    <span class="c">// 3. Apply the explosion</span>
+    <span class="k">foreach</span> (<span class="t">Rigidbody</span> rb <span class="k">in</span> rbs) {
+        rb.<span class="f">AddExplosionForce</span>(500f, transform.position, 5f);
+    }
+}</pre>
+
+        <div class="warning-box">
+            <strong>AddExplosionForce Explained:</strong><br>
+            Unity calculates a vector from the <code>center</code> (transform.position) to each piece.
+            It then applies a force in that direction. This is why shards fly away from the middle,
+            creating a 3D "pop" effect.
+        </div>
+
+        <h2>Impact Effects — Visual Feedback</h2>
+        <p>To make gunfire feel satisfying, we spawn <strong>particle effects</strong> at the point of impact:</p>
+        <pre>
+<span class="c">// In GunShot.cs, inside the raycast if-block:</span>
+<span class="t">GameObject</span> sparks = <span class="f">Instantiate</span>(hitEffect, hit.point, <span class="t">Quaternion</span>.LookRotation(hit.normal));
+<span class="f">Destroy</span>(sparks, <span class="n">0.5f</span>);</pre>
+
+        <h2>Understanding hit.normal</h2>
+        <p>The <code>hit.normal</code> is a vector perpendicular to the surface. If you hit a wall head-on,
+            the normal points straight back at you. By using <code>Quaternion.LookRotation(hit.normal)</code>,
+            we ensure sparks always fly <strong>away from the wall</strong>, regardless of angle.</p>
+
+        <table>
+            <tr>
+                <th>Surface Angle</th>
+                <th>Normal Direction</th>
+                <th>Spark Behavior</th>
+            </tr>
+            <tr>
+                <td>Front wall</td>
+                <td>Towards camera</td>
+                <td>Sparks bounce toward player</td>
+            </tr>
+            <tr>
+                <td>Floor (from above)</td>
+                <td>Straight up</td>
+                <td>Sparks fly upward</td>
+            </tr>
+            <tr>
+                <td>Ceiling</td>
+                <td>Straight down</td>
+                <td>Sparks fall downward</td>
+            </tr>
+        </table>
+
+        <div class="success-box">
+            <strong>Performance Note:</strong> We destroy the spark effect after 0.5 seconds using
+            <code>Destroy(sparks, 0.5f)</code>. Without this, hundreds of particle systems would
+            accumulate and tank your framerate.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 20: CHAPTER 8 - SINGLETON SYSTEM ================= -->
+    <div class="page">
+        <h1>Chapter 8: The Singleton Pattern</h1>
+        <p>As the game grows, we need a way to track data like <strong>Total Kills</strong> and
+            <strong>Enemies Remaining</strong>. We use the <strong>Singleton Pattern</strong> to solve this.
+        </p>
+
+        <h2>8.1 What is a Static Variable?</h2>
+        <p>Normally, if you have 100 Cubes, each has its own "Health". If one loses health, the others
+            remain at 100. <strong>Static</strong> is different. A static variable belongs to the
+            <strong>class itself</strong>, not the individual objects. There is only ever <strong>ONE</strong>
+            copy in the entire game memory.
+        </p>
+
+        <h2>8.2 The "Global Hotline" Implementation</h2>
+        <pre>
+<span class="k">public class</span> <span class="t">ScoreManager</span> : <span class="t">MonoBehaviour</span> {
+    <span class="c">// The Hotline</span>
+    <span class="k">public static</span> <span class="t">ScoreManager</span> instance;
+
+    <span class="k">void</span> <span class="f">Awake</span>() {
+        <span class="c">// Register myself as the manager</span>
+        instance = <span class="k">this</span>; 
+    }
+}</pre>
+
+        <h2>Why use Awake for the instance?</h2>
+        <p><code>Awake()</code> runs before <code>Start()</code>. This ensures that the moment the
+            game begins, the "hotline" is connected. If an enemy dies on frame 1, the manager
+            is already there to receive the call.</p>
+
+        <h2>Complete ScoreManager Implementation</h2>
+        <pre>
+<span class="k">using</span> UnityEngine;
+<span class="k">using</span> TMPro;
+
+<span class="k">public class</span> <span class="t">ScoreManager</span> : <span class="t">MonoBehaviour</span> {
+    <span class="k">public static</span> <span class="t">ScoreManager</span> instance;
+
+    <span class="k">public</span> <span class="t">TextMeshProUGUI</span> enemiesLeftText;
+    <span class="k">public</span> <span class="t">TextMeshProUGUI</span> killsText;
+
+    <span class="k">private</span> <span class="t">int</span> kills = <span class="n">0</span>;
+    <span class="k">private</span> <span class="t">int</span> enemiesLeft;
+
+    <span class="k">void</span> <span class="f">Awake</span>() {
+        instance = <span class="k">this</span>;
+    }
+
+    <span class="k">void</span> <span class="f">Start</span>() {
+        enemiesLeft = <span class="t">GameObject</span>.<span class="f">FindGameObjectsWithTag</span>(<span class="s">"Enemy"</span>).Length;
+        <span class="f">UpdateUI</span>();
+    }
+
+    <span class="k">public void</span> <span class="f">EnemyKilled</span>() {
+        kills++;
+        enemiesLeft--;
+        <span class="f">UpdateUI</span>();
+    }
+
+    <span class="k">void</span> <span class="f">UpdateUI</span>() {
+        enemiesLeftText.text = <span class="s">"Alive "</span> + enemiesLeft;
+        killsText.text = <span class="s">"Kills: "</span> + kills;
+    }
+}</pre>
+
+        <div class="note-box">
+            <span class="note-title">Decoupling</span>
+            In a bad game engine, the Enemy would need a variable for the UI, a variable for the Manager,
+            and a variable for the Camera. In Zero Drag, the Enemy doesn't care who is listening.
+            It just shouts <code>ScoreManager.instance.EnemyKilled()</code> into the air, and
+            because the variable is static, the message always finds its way.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 21: CHAPTER 8.2 - UI & TAGS ================= -->
+    <div class="page">
+        <h1>Chapter 8.2: Dynamic UI & Tags</h1>
+        <p>To make the UI automated, we use <strong>Unity Tags</strong>. This avoids
+            manually counting objects in every level.</p>
+
+        <h2>Automated Enemy Tracking</h2>
+        <pre>
+<span class="k">void</span> <span class="f">Start</span>() {
+    <span class="c">// Search the entire scene for dushmans</span>
+    enemiesLeft = <span class="t">GameObject</span>.<span class="f">FindGameObjectsWithTag</span>(<span class="s">"Enemy"</span>).Length;
+    <span class="f">UpdateUI</span>();
+}</pre>
+
+        <p>This is extremely efficient. You can place 5 cubes or 500 cubes; as long as they carry
+            the <strong>"Enemy"</strong> tag, the <code>ScoreManager</code> will find
+            them and set the "Alive" counter correctly on frame one.</p>
+
+        <h2>UI Feedback Consistency</h2>
+        <p>Whenever a kill is recorded, we must refresh the screen. We keep the logic in a
+            dedicated <code>UpdateUI()</code> function to ensure that if we ever change
+            the text format (e.g., changing "Alive" to "Dushman Bache"), we only have
+            to fix it in <strong>one place</strong>.</p>
+
+        <h2>Unity Setup Requirements</h2>
+        <p>To make this system work in Unity, follow these steps:</p>
+        <ol>
+            <li><strong>Create GameManager:</strong> Empty GameObject in your scene.</li>
+            <li><strong>Attach Script:</strong> Add <code>ScoreManager.cs</code> to the GameManager.</li>
+            <li><strong>Create UI Text Elements:</strong> Two TextMeshPro objects on your Canvas.</li>
+            <li><strong>Link References:</strong> Drag the two text objects into the Inspector fields on ScoreManager.
+            </li>
+            <li><strong>Tag Enemies:</strong> Select all enemy cubes, set their Tag to "Enemy" in the Inspector.</li>
+        </ol>
+
+        <div class="warning-box">
+            <strong>Common Mistake:</strong> Forgetting to tag enemies will result in the counter showing "0"
+            even when there are cubes in the scene. <code>FindGameObjectsWithTag</code> only finds objects
+            with that specific tag.
+        </div>
+
+        <h2>The Data Flow Diagram</h2>
+        <p>Understanding how information travels through the system is crucial:</p>
+        <pre>
+1. Player clicks → GunShot.cs fires ray
+2. Ray hits cube → GetComponent finds EnemyHealth
+3. EnemyHealth.TakeDamage(25) is called
+4. Health drops to 0 → Die() is triggered
+5. Die() calls ScoreManager.instance.EnemyKilled()
+6. ScoreManager increments kills, decrements enemies
+7. UpdateUI() refreshes the screen text
+8. Broken prefab is spawned with explosion force
+9. Original cube is destroyed</pre>
+
+        <div class="success-box">
+            <strong>Pro Tip:</strong> By splitting <code>enemiesLeftText</code> and <code>killsText</code>
+            into two public variables, we gain the freedom to place them anywhere on the UI
+            (Top-Left, Bottom-Right, etc.) without touching the code again.
+        </div>
+        <div class="page-number"></div>
+    </div>
+
+    <!-- ================= PAGE 22: CONCLUSION ================= -->
     <div class="page">
         <h1>Conclusion & Roadmap</h1>
         <p>You have now built the core framework of <strong>Zero Drag</strong>. This is not just a collection of
@@ -1335,10 +1619,8 @@ velocity.y = <span class="n">10f</span>;  <span class="c">// Magic number! How h
 
         <h2>Future Development Modules</h2>
         <ul>
-            <li><strong>Module 7:</strong> Damage System — Enemy health, hit detection, death logic.</li>
-            <li><strong>Module 8:</strong> Crosshair & HUD — Aim indicator, ammo counter, health bar.</li>
             <li><strong>Module 9:</strong> Weapon System — Multiple guns, switching, reloading.</li>
-            <li><strong>Module 10:</strong> Muzzle Flash & Sound — Visual and audio feedback on fire.</li>
+            <li><strong>Module 10:</strong> Muzzle Flash — Visual fire feedback when shooting.</li>
             <li><strong>Module 11:</strong> Enemy AI — Patrol, chase, attack behaviors.</li>
             <li><strong>Module 12:</strong> Story System — Dialogue, cutscenes, mission objectives.</li>
             <li><strong>Module 13:</strong> Post-Processing — Bloom, vignette, color grading.</li>
