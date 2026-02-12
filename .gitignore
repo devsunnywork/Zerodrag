@@ -6,7 +6,26 @@
 [Bb]uilds/
 [Ll]ogs/
 [Uu]serSettings/
-[Pp]rojectSettings/
+
+# Asset Exclusions (Heavy files)
+*.fbx
+*.obj
+*.max
+*.blend
+*.png
+*.jpg
+*.jpeg
+*.tga
+*.psd
+*.wav
+*.mp3
+*.ogg
+*.aif
+*.mov
+*.mp4
+
+# Specific Large Asset Folders
+# Assets/ScifiOfficeLite/
 
 # IDE
 .vs/
@@ -31,3 +50,4 @@ Thumbs.db
 
 # Crashlytics
 crashlytics-build.properties
+
