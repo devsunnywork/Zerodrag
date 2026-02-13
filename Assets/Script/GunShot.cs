@@ -1,3 +1,4 @@
+// GunShot handles ammo, shooting logic, and reload coroutines.
 using System.Collections;
 using UnityEngine;
 using TMPro;
