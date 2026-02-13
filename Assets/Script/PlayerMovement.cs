@@ -1,3 +1,4 @@
+// PlayerMovement handles WASD movement with KeyCode fallbacks for robustness.
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
