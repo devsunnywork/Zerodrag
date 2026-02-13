@@ -42,11 +42,17 @@ public class PlayerMovement : MonoBehaviour
 
     void Move()
     {
+        float x = 0;
+        float z = 0;
 
-       float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
+        // Using direct KeyCodes to bypass Input Axis errors
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) x = 1;
+        else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) x = -1;
 
-        Vector3 move = transform.right * x   + transform.forward * z;
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) z = 1;
+        else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) z = -1;
+
+        Vector3 move = transform.right * x + transform.forward * z;
         controller.Move(move * speed * Time.deltaTime);
     }
 
@@ -78,9 +84,13 @@ public class PlayerMovement : MonoBehaviour
         velocity.y = -2f;
       } 
 
-      if(Input.GetButtonDown("Jump") && isGrounded)
+      if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.Space))
       {
-         velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+          Debug.Log("Jump Pressed! isGrounded: " + isGrounded);
+          if (isGrounded)
+          {
+              velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+          }
       }
 
       velocity.y += gravity * Time.deltaTime;
