@@ -1,3 +1,4 @@
+// WeaponPickUp handles detecting and parenting guns to the player's weapon holder.
 using UnityEngine;
 
 public class WeaponPickUp : MonoBehaviour
