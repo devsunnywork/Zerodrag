@@ -79,3 +79,12 @@ sysinfo.txt
 *.bak
 *.orig
 *.log
+
+# Large files - GitHub limit se bachne ke liye
+*.rar
+*.tif
+*.tiff
+*.psd
+*.zip
+*.7z
+*.unitypackage
