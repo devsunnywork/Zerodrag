@@ -1,4 +1,6 @@
 // GunShot handles ammo, shooting logic, and reload coroutines.
+// NOTE: This script should be DISABLED by default on the gun prefab.
+// WeaponPickUp.PickUp() enables it when the player picks up the gun.
 using System.Collections;
 using UnityEngine;
 using TMPro;
@@ -9,7 +11,7 @@ public class GunShot : MonoBehaviour
     [SerializeField] AudioSource gunSound;
     public float bulletRange = 100f;
     public float damage = 25f;
-    public GameObject hitEffect;
+    public ParticleSystem muzzleFlash; // Drag your muzzle flash ParticleSystem here
     public float maxAmmo = 10f;
     public float reloadTime = 2f;
     [SerializeField] AudioClip reloadSound;
@@ -17,13 +19,11 @@ public class GunShot : MonoBehaviour
     private float currentAmmo;
     private bool isReloading = false;
 
-
     void Start()
     {
         currentAmmo = maxAmmo;
-        if (this.enabled) UpdateAmmoUI();
-        else if (ammoText != null) ammoText.text = ""; // Hide if not held
-    }   
+        UpdateAmmoUI();
+    }
 
     void OnEnable()
     {
@@ -32,11 +32,10 @@ public class GunShot : MonoBehaviour
 
     void OnDisable()
     {
-        if (ammoText != null) ammoText.text = ""; // Hide when dropped/disabled
+        if (ammoText != null) ammoText.text = "";
     }
 
     void Update()
-
     {
         if (isReloading)
             return;
@@ -55,35 +54,38 @@ public class GunShot : MonoBehaviour
 
     void Shoot()
     {
-
         currentAmmo--;
         UpdateAmmoUI();
-        gunSound.PlayOneShot(gunSound.clip);  
+
+        // Muzzle flash
+        if (muzzleFlash != null) muzzleFlash.Play();
+
+        gunSound.PlayOneShot(gunSound.clip);
         Ray ray = new Ray(playerCamera.position, playerCamera.forward);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, bulletRange))
         {
-            GameObject impactGO = Instantiate(hitEffect, hit.point, Quaternion.LookRotation(hit.normal));
-            Destroy(impactGO, 0.5f);
-            
-            //Debug.Log("Hit: " + hit.collider.gameObject.name);
-
+            // Enemy ko damage do
             EnemyHealth enemy = hit.collider.GetComponent<EnemyHealth>();
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
             }
+
+            // NPC ko maara toh bhaag jayega
+            NPCController npc = hit.collider.GetComponent<NPCController>();
+            if (npc != null)
+            {
+                npc.StartFleeing();
+            }
         }
     }
-     
+
     IEnumerator Reload()
     {
         isReloading = true;
-        Debug.Log("Reloading...");
-
-        if (ammoText != null)
-            ammoText.text = "Reloading...";
+        if (ammoText != null) ammoText.text = "Reloading...";
 
         if (reloadSound != null)
             gunSound.PlayOneShot(reloadSound);
@@ -93,12 +95,10 @@ public class GunShot : MonoBehaviour
         currentAmmo = maxAmmo;
         isReloading = false;
         UpdateAmmoUI();
-        Debug.Log("Reload Complete!");
     }
-
     void UpdateAmmoUI()
     {
         if (ammoText != null)
-            ammoText.text = "Ammo: " + currentAmmo + " / " + maxAmmo;
+            ammoText.text = currentAmmo + " / " + maxAmmo;
     }
 }
