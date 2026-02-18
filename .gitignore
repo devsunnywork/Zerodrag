@@ -88,3 +88,16 @@ sysinfo.txt
 *.zip
 *.7z
 *.unitypackage
+
+# Large asset folders - GitHub mein push nahi karna
+Assets/SimpleTown/
+Assets/npc_casual_set_00/
+Assets/TextMesh Pro/
+Assets/URPDefaultResources/
+Assets/ScifiOfficeLite/
+Assets/_Recovery/
+Assets/Infima Games/
+Assets/!GET_MORE_ASSETS_FOR_FREE/
+*.slnx
+*.fbx
+*.exr
