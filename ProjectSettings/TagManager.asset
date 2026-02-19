@@ -19,6 +19,7 @@ TagManager:
   - Enemy
   - Door
   - Gun
+  - Waypoint
   layers:
   - Default
   - TransparentFX
