@@ -18,7 +18,10 @@ public class EnemyHealth : MonoBehaviour
 
     void Die()
     {
-        ScoreManager.instance.EnemyKilled();
+        if (ScoreManager.instance != null)
+        {
+            ScoreManager.instance.EnemyKilled();
+        }
         GameObject broken = Instantiate(brokenVersion, transform.position, transform.rotation);
         
         Rigidbody[] rbs = broken.GetComponentsInChildren<Rigidbody>();
