@@ -5,11 +5,11 @@ using UnityEngine.AI;
 public class NPCController : MonoBehaviour
 {
     public NavMeshAgent agent;
-    public Transform[] waypoints;
-    public float speed = 2f;
+    private GameObject[] waypoints; 
+    public float speed = 1f;
     public float waitTime = 3f;
-    public float runSpeed = 6f;
-    public float fleeDistance = 15f;
+    public float runSpeed = 10f;
+    public float fleeDistance = 50f;
     private bool isWaiting = false;
     private bool isFleeing = false;
     private int currentWaypointIndex = 0;
@@ -17,6 +17,13 @@ public class NPCController : MonoBehaviour
 
     void Start()
     {
+        waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
+        
+        if (waypoints.Length > 0)
+        {
+            currentWaypointIndex = Random.Range(0, waypoints.Length);
+        }
+
         agent.speed = speed;
         animator = GetComponent<Animator>();
     }
@@ -39,15 +46,16 @@ public class NPCController : MonoBehaviour
 
     void Patrol()
     {
-        if (isWaiting) return;
+        if (isWaiting || waypoints.Length == 0) return;
         animator.SetBool("isWalking", true);
-        agent.SetDestination(waypoints[currentWaypointIndex].position);
 
-        float distanceToWaypoint = Vector3.Distance(transform.position, waypoints[currentWaypointIndex].position);
+        agent.SetDestination(waypoints[currentWaypointIndex].transform.position);
+
+        float distanceToWaypoint = Vector3.Distance(transform.position, waypoints[currentWaypointIndex].transform.position);
 
         if (distanceToWaypoint < 2f)
         {
-            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+            currentWaypointIndex = Random.Range(0, waypoints.Length);
             StartCoroutine(WaitAtWaypoint());
         }
     }
@@ -65,6 +73,9 @@ public class NPCController : MonoBehaviour
 
     public void StartFleeing()
     {
+        GameObject playerObj = GameObject.FindWithTag("Player");
+        if (playerObj == null) return;
+
         isFleeing = true;
         isWaiting = false;
         agent.isStopped = false;
@@ -72,7 +83,7 @@ public class NPCController : MonoBehaviour
         animator.SetBool("isRunning", true);
         animator.SetBool("isWalking", false);
 
-        Vector3 fleeDirection = transform.position - GameObject.FindWithTag("Player").transform.position;
+        Vector3 fleeDirection = transform.position - playerObj.transform.position;
         Vector3 fleeTarget = transform.position + fleeDirection.normalized * fleeDistance;
         agent.SetDestination(fleeTarget);
     }
