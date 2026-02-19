@@ -1,6 +1,3 @@
-// GunShot handles ammo, shooting logic, and reload coroutines.
-// NOTE: This script should be DISABLED by default on the gun prefab.
-// WeaponPickUp.PickUp() enables it when the player picks up the gun.
 using System.Collections;
 using UnityEngine;
 using TMPro;
@@ -11,7 +8,7 @@ public class GunShot : MonoBehaviour
     [SerializeField] AudioSource gunSound;
     public float bulletRange = 100f;
     public float damage = 25f;
-    public ParticleSystem muzzleFlash; // Drag your muzzle flash ParticleSystem here
+    public ParticleSystem muzzleFlash;
     public float maxAmmo = 10f;
     public float reloadTime = 2f;
     [SerializeField] AudioClip reloadSound;
@@ -57,27 +54,24 @@ public class GunShot : MonoBehaviour
         currentAmmo--;
         UpdateAmmoUI();
 
-        // Muzzle flash
         if (muzzleFlash != null) muzzleFlash.Play();
-
         gunSound.PlayOneShot(gunSound.clip);
+
         Ray ray = new Ray(playerCamera.position, playerCamera.forward);
-        RaycastHit hit;
+        
+        RaycastHit[] hits = Physics.SphereCastAll(ray, 0.5f, bulletRange);
+        
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 
-        if (Physics.Raycast(ray, out hit, bulletRange))
+        foreach (RaycastHit hit in hits)
         {
-            // Enemy ko damage do
-            EnemyHealth enemy = hit.collider.GetComponent<EnemyHealth>();
-            if (enemy != null)
-            {
-                enemy.TakeDamage(damage);
-            }
+            if (hit.collider.CompareTag("Player")) continue;
 
-            // NPC ko maara toh bhaag jayega
-            NPCController npc = hit.collider.GetComponent<NPCController>();
+            NPCController npc = hit.collider.GetComponentInParent<NPCController>();
             if (npc != null)
             {
                 npc.StartFleeing();
+                return;
             }
         }
     }
@@ -96,6 +90,7 @@ public class GunShot : MonoBehaviour
         isReloading = false;
         UpdateAmmoUI();
     }
+
     void UpdateAmmoUI()
     {
         if (ammoText != null)
