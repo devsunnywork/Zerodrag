@@ -6,8 +6,8 @@ public class RifleController : MonoBehaviour
     [Header("Weapon Stats")]
     public float damage = 10f;
     public float range = 100f;
-    public float fireRate = 10f; 
-    
+    public float fireRate = 10f;
+
     [Header("Ammo Settings")]
     public int maxAmmo = 30;
     public int currentAmmo;
@@ -19,7 +19,6 @@ public class RifleController : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip fireSound;
     public AudioClip reloadSound;
-   
 
     private float nextTimeToFire = 0f;
 
@@ -30,7 +29,7 @@ public class RifleController : MonoBehaviour
 
     void OnEnable()
     {
-        isReloading = false; 
+        isReloading = false;
     }
 
     void Update()
@@ -54,58 +53,36 @@ public class RifleController : MonoBehaviour
     void Shoot()
     {
         currentAmmo--;
-        if (audioSource != null && fireSound != null) audioSource.PlayOneShot(fireSound);
 
-        Debug.DrawRay(playercamera.transform.position, playercamera.transform.forward * range, Color.red, 1f);
-
-        // Sabse badhiya tareeka: Ignore EVERYTHING on Player layer + Tag
-        int layerMask = ~LayerMask.GetMask("Player", "Ignore Raycast");
-
-        RaycastHit[] hits = Physics.SphereCastAll(playercamera.transform.position, 0.2f, playercamera.transform.forward, range, layerMask, QueryTriggerInteraction.Ignore);
-        
-        if (hits.Length > 0)
+        if (audioSource != null && fireSound != null)
         {
-            System.Array.Sort(hits, (x, y) => x.distance.CompareTo(y.distance));
+            audioSource.PlayOneShot(fireSound);
+        }
 
-            foreach (var h in hits)
+        RaycastHit hit;
+        if (Physics.Raycast(playercamera.transform.position, playercamera.transform.forward, out hit, range))
+        {
+            NPCController npc = hit.transform.GetComponentInParent<NPCController>();
+            if (npc != null)
             {
-                // FIX: Apne haath ya gun se takrane se bachne ke liye 1 meter ka gap rakhein
-                if (h.distance < 1.0f) continue; 
-                if (h.collider.CompareTag("Player")) continue;
-
-                // NPC Check
-                NPCController npc = h.transform.GetComponentInParent<NPCController>();
-                if (npc != null) 
-                {
-                    npc.StartFleeing();
-                    npc.TakeDamage(damage);
-                    Debug.Log("🎯 Target Hit: NPC " + h.transform.root.name);
-                    break; 
-                }
-                
-                // Enemy Check
-                EnemyController enemy = h.transform.GetComponentInParent<EnemyController>();
+                npc.StartFleeing();
+                npc.TakeDamage(damage);
+            }
+            else if (hit.collider.CompareTag("Enemy"))
+            {
+                EnemyController enemy = hit.transform.GetComponentInParent<EnemyController>();
                 if (enemy != null)
                 {
                     enemy.TakeDamage(damage);
-                    Debug.Log("🎯 Target Hit: Enemy!");
-                    break;
-                }
-
-                // Stop at solid objects without flooding logs
-                if (h.collider.gameObject.layer == LayerMask.NameToLayer("Default"))
-                {
-                    break; 
                 }
             }
         }
     }
+
     IEnumerator Reload()
     {
-    
         isReloading = true;
-        Debug.Log("Reloading...");
-
+        
         if (audioSource != null && reloadSound != null)
         {
             audioSource.PlayOneShot(reloadSound);
@@ -115,6 +92,5 @@ public class RifleController : MonoBehaviour
 
         currentAmmo = maxAmmo;
         isReloading = false;
-        Debug.Log("Reload Complete!");
     }
 }
