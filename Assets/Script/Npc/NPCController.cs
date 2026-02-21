@@ -27,6 +27,16 @@ public class NPCController : MonoBehaviour
 
         agent.speed = speed;
         animator = GetComponent<Animator>();
+
+        // Auto-fix Collider (Height 2, Center 1 is standard for humanoids)
+        CapsuleCollider col = GetComponent<CapsuleCollider>();
+        if (col != null)
+        {
+            col.height = 2f;
+            col.center = new Vector3(0, 1f, 0);
+            col.radius = 0.3f;
+            col.isTrigger = false;
+        }
     }
 
     void Update()
