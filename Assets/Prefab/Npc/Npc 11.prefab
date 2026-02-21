@@ -6429,7 +6429,7 @@ GameObject:
   - component: {fileID: 8901804097223066358}
   m_Layer: 0
   m_Name: Npc 11
-  m_TagString: Untagged
+  m_TagString: Npc
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6580,6 +6580,7 @@ MonoBehaviour:
   waitTime: 3
   runSpeed: 10
   fleeDistance: 50
+  health: 100
 --- !u!136 &8901804097223066358
 CapsuleCollider:
   m_ObjectHideFlags: 0

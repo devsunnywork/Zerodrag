@@ -3,19 +3,23 @@ using UnityEngine;
 public class WeaponPickUp : MonoBehaviour
 {
     public float pickUpRange = 5f;
-    public Camera playerCamera;    
+    public Camera playerCamera;  
     public Transform weaponHolder; 
-    public LayerMask pickUpLayer;  
+    public LayerMask pickUpLayer; 
+    private GameObject currentGun;   
 
     private bool hasGun = false;   
 
     void Update()
     {
-        if (hasGun) return;
-
-        if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.F))
+        if (!hasGun && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.F)))
         {
             TryPickUp();
+        }
+
+        if (hasGun && Input.GetKeyDown(KeyCode.G))
+        {
+            DropGun();  
         }
     }
 
@@ -44,21 +48,11 @@ public class WeaponPickUp : MonoBehaviour
                 return;
             }
         }
-
-        GameObject[] guns = GameObject.FindGameObjectsWithTag("Gun");
-        foreach (GameObject g in guns)
-        {
-            float dist = Vector3.Distance(transform.position, g.transform.position);
-            if (dist <= pickUpRange)
-            {
-                PickUp(g);
-                return;
-            }
-        }
     }
 
     void PickUp(GameObject gun)
     {
+        currentGun = gun;
         gun.transform.SetParent(weaponHolder);
         gun.transform.localPosition = Vector3.zero;
         gun.transform.localRotation = Quaternion.identity;
@@ -69,9 +63,28 @@ public class WeaponPickUp : MonoBehaviour
         Collider col = gun.GetComponent<Collider>();
         if (col != null) col.enabled = false;
 
-        GunShot script = gun.GetComponent<GunShot>();
-        if (script != null) script.enabled = true;
+        RifleController newScript = gun.GetComponent<RifleController>();
+        if (newScript != null) newScript.enabled = true;
 
         hasGun = true;
+    }
+
+    void DropGun()
+    {
+        if (currentGun == null) return; 
+
+        currentGun.transform.SetParent(null); 
+
+        Rigidbody rb = currentGun.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = false; 
+
+        Collider col = currentGun.GetComponent<Collider>();
+        if (col != null) col.enabled = true;
+
+        RifleController script = currentGun.GetComponent<RifleController>();
+        if (script != null) script.enabled = false;
+
+        currentGun = null;
+        hasGun = false;
     }
 }

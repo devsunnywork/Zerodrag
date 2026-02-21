@@ -10,6 +10,7 @@ public class NPCController : MonoBehaviour
     public float waitTime = 3f;
     public float runSpeed = 10f;
     public float fleeDistance = 50f;
+    public float health = 100f;
     private bool isWaiting = false;
     private bool isFleeing = false;
     private int currentWaypointIndex = 0;
@@ -86,5 +87,19 @@ public class NPCController : MonoBehaviour
         Vector3 fleeDirection = transform.position - playerObj.transform.position;
         Vector3 fleeTarget = transform.position + fleeDirection.normalized * fleeDistance;
         agent.SetDestination(fleeTarget);
+    }
+
+    public void TakeDamage(float amount)
+    {
+        health -= amount;
+        if(health <= 0)
+        {
+            Die();
+        }
+
+    }
+
+    void Die()
+    {
     }
 }

@@ -2113,7 +2113,7 @@ GameObject:
   - component: {fileID: 9160998975803711585}
   m_Layer: 0
   m_Name: Npc 14
-  m_TagString: Untagged
+  m_TagString: Npc
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2242,6 +2242,7 @@ MonoBehaviour:
   waitTime: 3
   runSpeed: 10
   fleeDistance: 50
+  health: 100
 --- !u!195 &6716426078210063997
 NavMeshAgent:
   m_ObjectHideFlags: 0

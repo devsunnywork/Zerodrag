@@ -3287,7 +3287,7 @@ GameObject:
   - component: {fileID: 4693575436304042265}
   m_Layer: 0
   m_Name: Npc 7
-  m_TagString: Untagged
+  m_TagString: Npc
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3433,6 +3433,7 @@ MonoBehaviour:
   waitTime: 3
   runSpeed: 10
   fleeDistance: 50
+  health: 100
 --- !u!136 &4693575436304042265
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -3453,9 +3454,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 1
+  m_Height: 2.22
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.92, z: 0}
 --- !u!1 &4558891880580284431
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,18 +16,18 @@ TagManager:
   - Wood (Static)
   - Dirt (Static)
   - Wood
-  - Enemy
-  - Door
-  - Gun
   - Waypoint
+  - Npc
+  - Gun
+  - Enemy
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Ground
+  - Weapon
   - Water
   - UI
-  - Enemy
+  - Npc
   - 
   - Wall
   - First Person View
@@ -37,7 +37,7 @@ TagManager:
   - Post Processing Scope
   - Invisible Wall
   - Projectile
-  - Gun
+  - 
   - 
   - 
   - 

@@ -383,6 +383,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Npc 5
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f14962bf8c2a50544b362f1694bf4149,
+        type: 3}
+      propertyPath: m_TagString
+      value: Npc
+      objectReference: {fileID: 0}
     - target: {fileID: 2442698113146012975, guid: f14962bf8c2a50544b362f1694bf4149,
         type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -774,6 +779,7 @@ MonoBehaviour:
   waitTime: 3
   runSpeed: 10
   fleeDistance: 50
+  health: 100
 --- !u!136 &1157970592214437121
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -793,10 +799,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1
+  m_Radius: 0.4
+  m_Height: 2.5
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!137 &2902206251604597521 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: -9004962196888533358, guid: f14962bf8c2a50544b362f1694bf4149,
