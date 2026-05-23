@@ -240,51 +240,7 @@ Assets/Scripts/
 
 ---
 
-## 📅 5. 30-Day Development Roadmap
-
-### 5.1 Phase 1: Gunplay & Feel (Days 1 - 7)
-* **Day 1 (Feb 20):** **Pistol & Rifle Core:** Develop main hitscan weapons and damage scripts.
-* **Day 2 (Feb 21):** **Magazine Management:** Ammo constraints, reloading timing, and UI counters.
-* **Day 3 (Feb 22):** **Iron Sights (ADS):** Tight camera zoom and weapon sway damping.
-* **Day 4 (Feb 23):** **Recoil & Camera Kick:** Physical recoil recovery spring and camera camera shake.
-* **Day 5 (Feb 24):** **Bullet Decals & Sparks:** Spawning blood/concrete impact particles based on surface angles.
-* **Day 6 (Feb 25):** **Audio Mix:** Weapon shots, metal shell drops, and physical impact audio.
-* **Day 7 (Feb 26):** **Action Polish:** Fluid sprint-to-fire transitions and tactical holster states.
-
-### 5.2 Phase 2: Territory & Economy (Days 8 - 14)
-* **Day 8 (Feb 27):** **Mission Manager:** Set up gang heist objectives and escape routes.
-* **Day 9 (Feb 28):** **Bounty System:** Code XP and Cash updates linked to rival kills and completed heists.
-* **Day 10 (Mar 01):** **Saving Turf Data:** JSON save/load scripts for Rupesh's cash balance and weapon unlocks.
-* **Day 11 (Mar 02):** **Neon HUD Design:** Style clean UI text tracking Cash, Ammo, and HP.
-* **Day 12 (Mar 03):** **Street Triggers:** Add interaction triggers for dark alleyway contacts and heist points.
-* **Day 13 (Mar 04):** **Bounty Summary UI:** Show heist grades, laundered cash payouts, and XP gains.
-* **Day 14 (Mar 05):** **Progression Locks:** Unlock Mission 2 (City Streets) only after securing Mission 1 (Warehouse).
-
-### 5.3 Phase 3: Rival Gangs & Urban AI (Days 15 - 21)
-* **Day 15 (Mar 06):** **Map Design:** Build gritty urban back-alleys, neon streets, and rain-slicked warehouses.
-* **Day 16 (Mar 07):** **NavMesh Navigation:** Bake city street layouts for smart tactical flanking.
-* **Day 17 (Mar 08):** **Thug Types:** Melee-driven gang chasers and rifle-wielding syndicate enforcers.
-* **Day 18 (Mar 09):** **Ambush Spawner:** Trigger waves of hitmen when Rupesh enters contested turf.
-* **Day 19 (Mar 10):** **Ambient Civilians:** City pedestrians that panic and run during gunfights.
-* **Day 20 (Mar 11):** **Waypoint Guide:** Holographic 3D arrows tracking objective distances.
-* **Day 21 (Mar 12):** **Atmospheric Lighting:** Dark shadows, neon light reflections, bloom, and heavy rain fog.
-
-### 5.4 Phase 4: Polish & Build (Days 22 - 28)
-* **Day 22 (Mar 13):** **Main Menu:** Dark, atmospheric title scene featuring options and quit buttons.
-* **Day 23 (Mar 14):** **Settings UI:** Wire mouse sensitivity sliders and master volume levels.
-* **Day 24 (Mar 15):** **Death & Retribution:** Respawn checks at safehouses and bounty deductions.
-* **Day 25 (Mar 16):** **Underworld Kill Feed:** Visual banners showing enforcers eliminated.
-* **Day 26 (Mar 17):** **Industrial Ambience:** Synth-wave heavy soundtracks, sirens, and rain loops.
-* **Day 27 (Mar 18):** **Vignette & Chromatic Aberration:** Post-processing screen edge effects on low health.
-* **Day 28 (Mar 19):** **Victory State:** Code the final confrontation with the syndicate leader and credits roll.
-
-### 5.5 Phase 5: Build Output (Days 29 - 30)
-* **Day 29 (Mar 20):** **The Bug Bash:** Fix collider issues, overlapping sound loops, and UI formatting.
-* **Day 30 (Mar 21):** **Standalone EXE Compiler:** Standard high-performance Windows build package.
-
----
-
-## 🚫 6. Scope Limitations (Frozen Scope)
+## 🚫 5. Scope Limitations (Frozen Scope)
 
 * **No Multiplayer:** Strictly single-player narrative focusing on Rupesh's climb to power.
 * **No Vehicle Driving:** Action is strictly infantry-based parkour and shooting.
@@ -293,7 +249,7 @@ Assets/Scripts/
 
 ---
 
-## 📦 7. Assets Guide
+## 📦 6. Assets Guide
 
 * **Models:** Quaternius Ultimate Sci-Fi & Character packs (Rival thugs, props, rusty warehouse containers).
 * **Weapons:** Kenney Blaster Kit (Futuristic heavy pistol and tactical carbine models).
