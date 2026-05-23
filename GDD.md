@@ -107,77 +107,29 @@ Set in a rain-slicked, modern metropolitan dystopia where the line between the p
 Zero Drag is characterized by momentum-driven urban combat where the player moves with deadly, frictionless speed.
 
 ### 3.1 Gritty Physics-Based Locomotion
-To simulate an elite, highly-trained gangster, the player movement uses a manual `CharacterController` instead of standard rigidbodies to maintain sharp, instant WASD responsiveness.
-
-#### Movement Kinematics
-Frictionless movement calculations run independently of frame rate. Rupesh accelerates, sprints, and stops instantly:
-```csharp
-float x = Input.GetAxis("Horizontal");
-float z = Input.GetAxis("Vertical");
-Vector3 move = transform.right * x + transform.forward * z;
-controller.Move(move * speed * Time.deltaTime);
-```
+To simulate an elite, highly-trained gangster, player movement is run entirely on a manual Unity `CharacterController` instead of standard heavy Rigidbodies. This enables instantaneous acceleration, zero sliding latency, and extremely sharp WASD keyboard responses. Frictionless calculations run independently of frame rate, allowing the player to sprint and stop instantly.
 
 ### 3.2 Dynamic Camera & The "Exorcist" Clamp
-To simulate tight combat aiming, mouse looking is split:
-* **Horizontal Look (Yaw):** Rotates Rupesh's body structure to direct physical movement.
-* **Vertical Look (Pitch):** Clamps camera rotation to exactly $+90^{\circ}$ (straight up) and $-90^{\circ}$ (straight down) to prevent unnatural camera flips during vertical gun battles.
-```csharp
-xRotation -= mouseY;
-xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-```
+Aiming controls utilize split vertical and horizontal mouse-looking variables. The horizontal look (yaw) rotates the player's physical root body structure to guide movement directions, while the vertical look (pitch) is clamped strictly between exactly $+90^{\circ}$ (straight up) and $-90^{\circ}$ (straight down) to prevent unnatural camera flips during intense gunfights.
 
 ### 3.3 Momentum Gravity & Down-Force Reset
-Gravity is calculated manually to manage high-velocity drops. To prevent gravity from compounding infinitely while Rupesh stands on a floor, a gravity reset simulates realistic downward friction:
-```csharp
-if (isGrounded && velocity.y < 0)
-{
-    velocity.y = -2f; // Firmly clamps Rupesh to walking surfaces
-}
-```
+To manage high-speed vertical drops, gravity is simulated manually. A downward force reset activates when the player is grounded, firmly clamping the player down to walking platforms and preventing vertical velocity accumulation while standing.
 
 ### 3.4 Parkour Ground Detection
-Using a custom sphere cast at Rupesh's feet to allow fluid jumps and slides off railings, sidewalks, and crates.
-* **Offset Trans:** Evaluated at the `GroundCheck` empty GameObject positioned at $Y = -1.0$.
-* **Detection Radius:** $0.4\text{ units}$.
-* **Layer Filtering:** Restricts detection to the `"Ground"` layer (ignoring props, triggers, and enemies).
-```csharp
-isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-```
+A custom sphere-cast ground test is executed continuously at the player's feet. Positioned at an offset of $Y = -1.0$ with a detection radius of $0.4\text{ units}$ and locked to the `"Ground"` layer (ignoring props and enemies), it ensures absolute fluid jumps and sliding movements off staircases, sidewalks, and street curbs.
 
 ### 3.5 Kinematic Tactical Jumps
-Jumping height is calculated using Newtonian kinematics rather than arbitrary force numbers. Rupesh leaps precisely over gaps and onto crates:
+Jumping heights are calculated on clean kinematic equations rather than arbitrary physics constants. The initial vertical leap velocity is computed dynamically using Newtonian kinematics: 
 
 $$v^2 = u^2 + 2as \implies u = \sqrt{h \times -2 \times g}$$
 
-```csharp
-if (Input.GetButtonDown("Jump") && isGrounded)
-{
-    velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-}
-```
+This ensures that Rupesh leaps precisely over alleyway gaps and onto industrial crates at mathematically exact heights.
 
 ### 3.6 Hitscan Urban Shootouts
-* **Action:** Direct hitscan Raycasting from the center of the camera forward, representing immediate bullet paths.
-* **Target Interface:** Grabs `EnemyHealth` to trigger gangster damage.
-* **Visual Polish:** Concrete and metal spark particles align perpendicular to wall/floor surfaces using `hit.normal`.
-```csharp
-GameObject sparks = Instantiate(hitEffect, hit.point, Quaternion.LookRotation(hit.normal));
-Destroy(sparks, 0.5f); // Prevent garbage collection memory leaks
-```
+Firearms project immediate hitscan rays straight forward from the camera's viewport center. If a ray intersects a rival enforcer, it interfaces directly with damage handlers. Environmental impacts project muzzle sparks and concrete dust oriented dynamically perpendicular to wall normal vectors (`hit.normal`).
 
 ### 3.7 Cinematic Fracture Destruction
-Rival gangsters and environment cover (crates, windows) shatter violently upon lethal hits using the **Fake Switch** technique:
-1. Solid meshes are instantly swapped on death for pre-fractured models (consisting of $8\text{--}15$ separate physical pieces).
-2. A radial explosion force blows the pieces apart, simulating dramatic cinematic impact:
-```csharp
-Rigidbody[] rbs = brokenInstance.GetComponentsInChildren<Rigidbody>();
-foreach (Rigidbody rb in rbs)
-{
-    rb.AddExplosionForce(500f, transform.position, 5f);
-}
-```
+Enemies and cover debris shatter upon fatal bullet impacts using the **Fake Switch** deconstruction technique. The solid model is instantly disabled, instantiating a pre-fractured mesh version of the thug or crate. A radial explosion force is immediately broadcasted at the impact locus, blowing the physical debris fragments dynamically across the scene.
 
 ---
 
