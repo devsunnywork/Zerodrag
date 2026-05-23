@@ -36,7 +36,7 @@ graph TD
     B --> C[Hunted by Rival Gangs & Corrupt Cops]
     C --> D[Cornered in Abandoned Warehouse]
     D --> E[Choice: Die or Pick up the Gun]
-    E --> F[Reactivation: "Zero Drag" Mental State Activated]
+    E --> F[Reactivation: Zero Drag Mental State Activated]
     F --> G[Gritty Evolution: Salvaging Turf, Cash & Guns]
     G --> H[Climbing the Ranks to Become the Ultimate Gangster]
 ```
