@@ -1,14 +1,14 @@
 # 🕶️ ZERO DRAG — A Crime Thriller FPS
 Developed Solo by **Sunny Rajput** (Lead Architect & Programmer)
 
-[![Zero Drag Pitch](https://img.shields.io/badge/Official-Website-00f0ff?style=for-the-badge&logo=html5)](file:///c:/Users/advik/Zero%20Drag/Website/index.html)
-[![Read GDD](https://img.shields.io/badge/Documentation-GDD-ff2e51?style=for-the-badge&logo=markdown)](file:///c:/Users/advik/Zero%20Drag/GDD.md)
+[![Zero Drag Pitch](https://img.shields.io/badge/Official-Website-00f0ff?style=for-the-badge&logo=html5)](./Website/index.html)
+[![Read GDD](https://img.shields.io/badge/Documentation-GDD-ff2e51?style=for-the-badge&logo=markdown)](./GDD.md)
 
 ---
 
 > [!IMPORTANT]
 > **READ THE GAME DESIGN DOCUMENT (GDD) FIRST:**
-> The complete architectural blueprint, kinematic mathematical equations, weapon progression metrics, dialogue layouts, and development milestones are documented in **[GDD.md](file:///c:/Users/advik/Zero%20Drag/GDD.md)**. Please refer to it for a detailed technical dive into the Unity implementation.
+> The complete architectural blueprint, kinematic mathematical equations, weapon progression metrics, dialogue layouts, and development milestones are documented in **[GDD.md](./GDD.md)**. Please refer to it for a detailed technical dive into the Unity implementation.
 
 ---
 
@@ -48,16 +48,16 @@ The codebase is built entirely on modern decoupled principles in Unity, utilizin
 
 Explore the design layouts, story acts, and front-end showcases here:
 
-*   📖 **[GDD.md](file:///c:/Users/advik/Zero%20Drag/GDD.md) (Game Design Document):** The holy grail of the project. Contains physics formulas, codebase architecture, inventory scripts, and directory structures.
-*   🎭 **[StoryDesign.md](file:///c:/Users/advik/Zero%20Drag/StoryDesign.md) (Story & Script):** Details the 10-scene opening cinematic script between Salim Bhai, Rupesh, and Vikram, along with the act branches.
-*   🖥️ **[Website/index.html](file:///c:/Users/advik/Zero%20Drag/Website/index.html) (Landing Web Showcase):** The official marketing site. Features a glassmorphic capsule menu, a live consequence simulator, custom responsive dossiers, and tabbed weapon drawers.
+*   📖 **[GDD.md](./GDD.md) (Game Design Document):** The holy grail of the project. Contains physics formulas, codebase architecture, inventory scripts, and directory structures.
+*   🎭 **[StoryDesign.md](./StoryDesign.md) (Story & Script):** Details the 10-scene opening cinematic script between Salim Bhai, Rupesh, and Vikram, along with the act branches.
+*   🖥️ **[Website/index.html](./Website/index.html) (Landing Web Showcase):** The official marketing site. Features a glassmorphic capsule menu, a live consequence simulator, custom responsive dossiers, and tabbed weapon drawers.
 
 ---
 
 ## 🔨 How to Get Started
 
 ### 1. Previews & Marketing Site
-To inspect the gorgeous web landing page, open **[index.html](file:///c:/Users/advik/Zero%20Drag/Website/index.html)** in a browser. It is fully interactive!
+To inspect the gorgeous web landing page, open **[index.html](./Website/index.html)** in a browser. It is fully interactive!
 
 ### 2. Launching in Unity Editor
 1. Open **Unity Hub** and add the project root directory.
