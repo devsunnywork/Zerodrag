@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZERO DRAG - Official Full Pitch Document</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,700&family=Roboto:wght@300;400;700&display=swap');
+
+        :root {
+            --primary-red: #d40000;
+            --black: #000000;
+            --off-white: #ffffff;
+            --dark-gray: #1a1a1a;
+            --line-gray: #e6e6e6;
+        }
+
+        @media print {
+            .page-break {
+                page-break-before: always;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .container {
+                border: none !important;
+                box-shadow: none !important;
+                background: white !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 20mm !important;
+            }
+
+            .mission-card {
+                break-inside: avoid;
+                border: 1px solid #000 !important;
+            }
+
+            .download-btn {
+                display: none !important;
+            }
+
+            .watermark {
+                opacity: 0.05 !important;
+            }
+        }
+
+        body {
+            background: #222;
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .download-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-red);
+            color: white;
+            padding: 15px 30px;
+            font-family: 'Orbitron', sans-serif;
+            text-decoration: none;
+            border-radius: 5px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 210mm;
+            /* A4 Width */
+            background: white;
+            padding: 25mm;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Watermark style */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 150px;
+            color: rgba(0, 0, 0, 0.03);
+            font-family: 'Orbitron', sans-serif;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Cover Page */
+        .cover-page {
+            height: 250mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 8px double var(--black);
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cover-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5rem;
+            letter-spacing: 15px;
+            margin: 0;
+            color: var(--black);
+            font-weight: 700;
+        }
+
+        .cover-subtitle {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--primary-red);
+            margin-top: 20px;
+            font-weight: bold;
+            letter-spacing: 5px;
+        }
+
+        .cover-author {
+            margin-top: 150px;
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+
+        /* Content Sections */
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            border-bottom: 3px solid var(--primary-red);
+            padding-bottom: 10px;
+            margin-top: 60px;
+            color: var(--black);
+            font-size: 2rem;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+        }
+
+        h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-red);
+            margin-top: 40px;
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .mission-header {
+            background: var(--black);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 50px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .mission-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            letter-spacing: 2px;
+        }
+
+        .mission-content {
+            border: 1px solid var(--line-gray);
+            padding: 40px;
+            background: #fff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .scene-label {
+            display: inline-block;
+            background: #f0f0f0;
+            color: #555;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-radius: 3px;
+        }
+
+        .dialogue-box {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.3rem;
+            padding: 20px 40px;
+            border-left: 5px solid var(--primary-red);
+            margin: 30px 0;
+            background: #f9f9f9;
+            color: #222;
+        }
+
+        .mechanic-box {
+            background: #fff5f5;
+            border: 1px solid #fee2e2;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .mechanic-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            color: var(--primary-red);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .cutscene-description {
+            border-left: 2px solid #ccc;
+            padding-left: 25px;
+            font-style: italic;
+            color: #555;
+            margin: 20px 0;
+        }
+
+        .footer-info {
+            text-align: center;
+            margin-top: 100px;
+            font-size: 0.9rem;
+            color: #999;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .twist-page {
+            background: #000;
+            color: white;
+            padding: 60px;
+            margin-top: 80px;
+            border: 5px solid var(--primary-red);
+        }
+
+        .twist-header {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-red);
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="download-btn" onclick="window.print()">DOWNLOAD AS PDF</button>
+
+    <div class="container">
+        <div class="watermark">ZERO DRAG</div>
+
+        <!-- PAGE 1: COVER -->
+        <div class="cover-page">
+            <div class="cover-title">ZERO DRAG</div>
+            <div class="cover-subtitle">PITCH & DESIGN DOCUMENT</div>
+            <div style="margin: 60px 0; height: 2px; width: 200px; background: var(--primary-red);"></div>
+            <p style="max-width: 600px; font-size: 1.4rem; font-style: italic; color: #444; line-height: 1.6;">
+                "A man cannot outrun his shadow, no matter how fast he drives."
+            </p>
+            <div class="cover-author">
+                Lead Designer: <strong>SUNNY RAJPUT</strong><br>
+                Version: 1.0 (Professional Pitch)<br>
+                Genre: Psychological Thriller / Action-Driving
+            </div>
+        </div>
+
+        <!-- PAGE 2: SYNOPSIS -->
+        <div class="page-break"></div>
+        <h2>GAME SYNOPSIS</h2>
+        <p style="font-size: 1.2rem;">
+            Zero Drag is the story of Rupesh (21), who infiltrates the heart of a criminal drug syndicate to avenge the
+            death of his family.
+            The game explores the thin line between justice and mania, forcing the player to question their own
+            perception of the "enemy."
+        </p>
+
+        <h2>PROPER MISSION LINEUP (M01 - M10)</h2>
+
+        <!-- MISSION 01 -->
+        <div class="mission-header">
+            <span class="mission-title">MISSION 01: ASH NIGHT</span>
+            <span>PROLOGUE</span>
+        </div>
+        <div class="mission-content">
+            <span class="scene-label">CUTSCENE: INTRO</span>
+            <div class="cutscene-description">
+                Night. Rainfall. The crackle of huge flames. The camera slowly orbits Rupesh, who is kneeling on the wet
+                pavement.
+                The bright orange of the burning house reflects in his dry, unblinking eyes. Neighbors are seen in the
+                distance,
+                their voices muffled, like they are underwater.
+            </div>
+            <div class="dialogue-box">
+                NPC #1: "The drug cartel... they wanted this land."<br>
+                NPC #2: "Poor kid. He's got no one left."
+            </div>
+            <div class="cutscene-description">
+                Screen Fades to Black. Text appears: <strong>3 MONTHS LATER.</strong>
+                Rupesh is shown in a small, dark garage, cleaning a bike. His friend stands in the doorway.
+            </div>
+            <div class="dialogue-box">
+                Friend: "Forget them, Rupesh. They are monsters."<br>
+                Rupesh: "I'll reach them... whether they are monsters or gods."
+            </div>
+        </div>
+
+        <!-- MISSION 02 -->
+        <div class="mission-header">
+            <span class="mission-title">MISSION 02: ENTRY LEVEL RUNNER</span>
+            <span>THE FIRST STEP</span>
+        </div>
+        <div class="mission-content">
+            <p>Rupesh meets <strong>Shree</strong>, a low-level supplier in a shady parking lot.
+                Player must complete 3 manual parcel deliveries to earn trust.</p>
+            <div class="mechanic-box">
+                <span class="mechanic-title">Mechanic: The Trust Gauge</span>
+                Deliveries must be clean. No damages, no police attention. Shree evaluates your speed.
+            </div>
+            <div class="dialogue-box">
+                Shree: "You drive like you're not afraid to die. That's dangerous... or very useful. We'll see."
+            </div>
+        </div>
+
+        <!-- MISSION 03 -->
+        <div class="mission-header">
+            <span class="mission-title">MISSION 03: RISK DELIVERY</span>
+            <span>THE BRIDGE CROSSING</span>
+        </div>
+        <div class="mission-content">
+            <p>A midnight delivery across the main city bridge. Police patrols are heavy due to a city-wide curfew.</p>
+            <div class="mechanic-box">
+                <span class="mechanic-title">Mechanic: Stealth Driving</span>
+                Player must kills the engine and coast in silence to avoid patrols. The bridge is the only way in.
+            </div>
+        </div>
+
+        <!-- MISSION 04 -->
+        <div class="page-break"></div>
+        <div class="mission-header">
+            <span class="mission-title">MISSION 04: HEAT INCREASE</span>
+            <span>THE ESCAPE</span>
+        </div>
+        <div class="mission-content">
+            <p>A routine drop turns into a setup. Police sirens surround the block. Rupesh must find a risky shortcut
+                through
+                a narrow alleyway to escape the perimeter.</p>
+            <div class="dialogue-box">
+                Shree (Radio): "Get out of there, Rupesh! I didn't know the Heat was this high!"
+            </div>
+        </div>
+
+        <!-- MISSION 05 -->
+        <div class="mission-header">
+            <span class="mission-title">MISSION 05: PROMOTION</span>
+            <span>EYE IN THE SKY</span>
+        </div>
+        <div class="mission-content">
+            <p>Multiple drops in high-end areas. First appearance of the <strong>Shadow Boss</strong>.</p>
+            <span class="scene-label">CUTSCENE: BALCONY</span>
+            <div class="cutscene-description">
+                A man stands on a penthouse balcony, camera stays behind him. You only see his expensive suit and a
+                glass of scotch.
+                He watches Rupesh's bike fly through the traffic below.
+            </div>
+            <div class="dialogue-box">
+                Villain: "He has zero drag. No friction with his conscience. I like him."
+            </div>
+        </div>
+
+        <!-- MISSION 06 -->
+        <div class="mission-header">
+            <span class="mission-title">MISSION 06: LOYALTY TEST</span>
+            <span>SUICIDE RUN</span>
+        </div>
+        <div class="mission-content">
+            <p>Shree offers a mission that everyone else refused—a delivery straight into the rival gang's territory.
+                Rupesh accepts without even asking for the payment amount.</p>
+        </div>
+
+        <!-- MISSION 07 -->
+        <div class="page-break"></div>
+        <div class="mission-header">
+            <span class="mission-title">MISSION 07: PERSONAL RISK</span>
+            <span>THE GHOST ROUTE</span>
+        </div>
+        <div class="mission-content">
+            <p>The route passes through "Ash Street"—where Rupesh's family died. This is a deep narrative mission.</p>
+            <div class="mechanic-box">
+                <span class="mechanic-title">Mental Health System: Glitch Overlay</span>
+                The screen flickers and colors distort. Audio becomes distorted as the house remains in sight.
+            </div>
+            <div class="dialogue-box">
+                Rupesh (Whisper): "I can still smell the smoke. I'm coming home... soon."
+            </div>
+        </div>
+
+        <!-- MISSION 08 -->
+        <div class="mission-header">
+            <span class="mission-title">MISSION 08: IMPOSSIBLE RUN</span>
+            <span>THE GATEKEEPER</span>
+        </div>
+        <div class="mission-content">
+            <p>High-speed highway convoy protection. Player must fend off attackers while maintaining 180kmph.</p>
+            <div class="dialogue-box">
+                Shree: "Boss wants to meet you. You're the only one who survived the filter."
+            </div>
+        </div>
+
+        <!-- MISSION 09 -->
+        <div class="mission-header">
+            <span class="mission-title">MISSION 09: PREPARATION</span>
+            <span>THE BLACKOUT</span>
+        </div>
+        <div class="mission-content">
+            <p>No driving. Rupesh walks through an underground gun market. He buys a custom black handgun.</p>
+            <span class="scene-label">CUTSCENE: ROOFTOP</span>
+            <div class="cutscene-description">
+                Rupesh stands on a windy rooftop, cleaning the gun. He stares at a photo of his family. He lights it on
+                fire.
+                As it burns, his face changes... for a split second, he looks terrifyingly calm.
+            </div>
+            <div class="dialogue-box">
+                Rupesh: "Tomorrow... the cycle ends. No more drag."
+            </div>
+        </div>
+
+        <!-- MISSION 10: THE FINALE -->
+        <div class="page-break"></div>
+        <div class="twist-page">
+            <div class="twist-header">THE GRAND FINALE (TWIST)</div>
+            <p style="font-size: 1.3rem;">Rupesh enters the penthouse. The Boss is waiting. Slow walk sequence.</p>
+            <div class="dialogue-box" style="color: white; border-left-color: white;">
+                "You blame me for that night? You think I took them away?"<br>
+                Boss turns around—<strong>He is Rupesh.</strong>
+            </div>
+            <p>
+                <strong>THE REVELATION:</strong> Rupesh has <strong>Multiple Personality Disorder</strong>.
+                The Boss isn't a drug dealer—he is the manifestation of Rupesh's suppressed ego.
+                Rupesh burned the house himself in a dissociative blackout because his family "limited" his potential.
+                The whole game was his Hero personality trying to cope with the monster he had become.
+            </p>
+            <div class="cutscene-description" style="color: #aaa;">
+                The final shot shows the police files on the table. The "syndicate" was just Rupesh alone,
+                committing crimes across the city in his other state.
+            </div>
+        </div>
+
+        <div class="footer-info">
+            SUNNY RAJPUT | ZERO DRAG | DESIGN DOCUMENT v1.0
+        </div>
+
+    </div>
+
+</body>
+
+</html>

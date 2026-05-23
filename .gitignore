@@ -1,45 +1,23 @@
-[Library]
-[Temp]
-[Obj]
-[Build]
-[Builds]
-[Logs]
-[MemoryCaptures]
-[UserSettings]
-*.csproj
-*.unityproj
-*.sln
-*.suo
-*.tmp
-*.user
-*.userprefs
-*.pidb
-*.booproj
-*.svclog
-*.pdb
-*.mdb
-*.opendb
-*.db
-*.VC.db
-AssetStoreTools*
-Assets/Plugins/Editor/JetBrains*
-.vs
-.gradle
-ExportedObj/
-.pdm-python
-.python-version
-.idea/
-.DS_Store
-.out/
-.appdata/
-sysinfo.txt
-*.swp
-*.bak
-*.orig
-*.log
-/[Aa]ssets/[Aa]ssetStoreTools*
-/[Aa]ssets/Plugins/Editor/JetBrains*
-/[Uu]nityGenerated/
+# Ignore all files by default in the workspace root
+/*
+
+# Exclude core repository documentation and website
+!.gitignore
+!README.md
+!GDD.md
+!StoryDesign.md
+!Website/
+
+# Allow scanning of Assets folder but ignore its contents
+!Assets/
+Assets/*
+
+# Strictly exclude the Scripts folder and its contents
+!Assets/Scripts/
+!Assets/Scripts/**
+!Assets/Scripts.meta
+
+# Ignore general Unity junk folders globally
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
@@ -47,18 +25,8 @@ sysinfo.txt
 /[Bb]uilds/
 /[Mm]emoryCaptures/
 /[Uu]serSettings/
-/[Vv]isualStudio/
-/[Vv]isualStudio.dot*
-/[Vv]isualStudioCode/
-/[Vv]isualStudioCode.dot*
-/[Ee]xportedObj/
 .vs/
-.idea/
 .vscode/
-.gradle/
-.pdm-python
-.python-version
-.DS_Store
 *.csproj
 *.unityproj
 *.sln
@@ -74,39 +42,3 @@ sysinfo.txt
 *.opendb
 *.db
 *.VC.db
-sysinfo.txt
-*.swp
-*.bak
-*.orig
-*.log
-
-# Large files - GitHub limit se bachne ke liye
-*.rar
-*.tif
-*.tiff
-*.psd
-*.zip
-*.7z
-*.unitypackage
-
-# Large asset folders - GitHub mein push nahi karna
-Assets/SimpleTown/
-Assets/npc_casual_set_00/
-Assets/TextMesh Pro/
-Assets/URPDefaultResources/
-Assets/ScifiOfficeLite/
-Assets/_Recovery/
-Assets/Infima Games/
-Assets/!GET_MORE_ASSETS_FOR_FREE/
-Assets/!GET_MORE_ASSETS_FOR_FREE.meta
-Assets/Infima Games.meta
-Assets/ScifiOfficeLite.meta
-Assets/SimpleTown.meta
-Assets/TextMesh Pro.meta
-Assets/URPDefaultResources.meta
-Assets/_Recovery.meta
-Assets/npc_casual_set_00.meta
-Assets/Textures.meta
-*.slnx
-*.fbx
-*.exr
