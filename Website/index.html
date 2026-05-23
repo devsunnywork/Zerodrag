@@ -1,0 +1,2771 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZERO DRAG — A Crime Thriller FPS by Sunny Rajput</title>
+    <meta name="description"
+        content="Hesitation is death. Zero Drag is a gritty, high-speed physics FPS crime thriller following Rupesh's descent from a normal citizen into a frictionless gangster, created by Sunny Rajput.">
+    
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --cyan: #00f0ff;
+            --red: #ff2e51;
+            --gold: #ffb900;
+            --bg-void: #050508;
+            --bg-card: #0d0d14;
+            --bg-card-hover: #141420;
+            --text-light: #f0f2f5;
+            --text-muted: #8a8d98;
+            --border-glow: rgba(0, 240, 255, 0.15);
+            --border-glow-red: rgba(255, 46, 81, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg-void);
+            color: var(--text-light);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-void);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--cyan);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--red);
+        }
+
+        /* FLOATING NAVIGATION CAPSULE */
+        nav {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 40px;
+            background: rgba(13, 13, 20, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 100px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        nav.shrink {
+            top: 12px;
+            padding: 10px 32px;
+            border-color: rgba(255, 46, 81, 0.3);
+            box-shadow: 0 8px 32px rgba(255, 46, 81, 0.15);
+        }
+
+        .nav-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-logo span {
+            color: var(--cyan);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        .nav-logo span.red {
+            color: var(--red);
+            text-shadow: 0 0 10px rgba(255, 46, 81, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--red);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--red), #b3002d);
+            color: #fff !important;
+            padding: 8px 24px;
+            border-radius: 100px;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 15px rgba(255, 46, 81, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 46, 81, 0.5);
+        }
+
+        /* HERO SECTION */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at center 60%, rgba(20, 10, 30, 0.4) 0%, var(--bg-void) 70%),
+                        linear-gradient(180deg, rgba(5, 5, 8, 0.2) 0%, var(--bg-void) 100%);
+            padding-top: 120px;
+        }
+
+
+
+        .hero-content {
+            position: relative;
+            z-index: 5;
+            max-width: 1000px;
+            padding: 0 24px;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 46, 81, 0.08);
+            border: 1px solid rgba(255, 46, 81, 0.3);
+            color: var(--red);
+            padding: 8px 24px;
+            border-radius: 100px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            box-shadow: 0 0 20px rgba(255, 46, 81, 0.1);
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--red);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--red);
+            animation: pulse 1.5s infinite;
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(3rem, 9vw, 6.5rem);
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -2px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+        }
+
+        .hero-title .t-cyan {
+            color: var(--cyan);
+            text-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+        }
+
+        .hero-title .t-white {
+            color: #fff;
+        }
+
+        .hero-subtitle {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: clamp(1rem, 2.5vw, 1.6rem);
+            color: var(--text-muted);
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+            font-weight: 600;
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+        }
+
+        .hero-tagline {
+            font-size: clamp(1rem, 1.8vw, 1.25rem);
+            color: #babcce;
+            max-width: 680px;
+            margin: 0 auto 36px;
+            line-height: 1.8;
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+        }
+
+        .hero-tagline strong {
+            color: var(--cyan);
+            font-weight: 600;
+        }
+
+        .dev-credit {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+        }
+
+        .dev-credit a {
+            color: var(--red);
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .dev-credit a:hover {
+            color: var(--cyan);
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+        }
+
+        /* COUNTDOWN WRAPPER */
+        .countdown-wrapper {
+            margin: 0 auto 48px;
+            max-width: 500px;
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+        }
+
+        .countdown-label {
+            font-size: 0.72rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .countdown-block {
+            background: rgba(13, 13, 20, 0.6);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 16px 20px;
+            min-width: 90px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .countdown-num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--cyan);
+            line-height: 1;
+            text-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+
+        .countdown-unit {
+            font-size: 0.62rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both;
+        }
+
+        .btn-red {
+            background: linear-gradient(135deg, var(--red), #b3002d);
+            color: #fff;
+            padding: 16px 42px;
+            border-radius: 100px;
+            font-weight: 800;
+            font-size: 0.92rem;
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            box-shadow: 0 6px 25px rgba(255, 46, 81, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-red:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 35px rgba(255, 46, 81, 0.6);
+        }
+
+        .btn-outline {
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            background: rgba(0, 240, 255, 0.03);
+            color: var(--cyan);
+            padding: 16px 42px;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-outline:hover {
+            background: rgba(0, 240, 255, 0.15);
+            border-color: var(--cyan);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        /* SECTION LAYOUTS */
+        section {
+            padding: 120px 80px;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stag {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 12px;
+        }
+
+        .stitle {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            color: #fff;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .stitle span {
+            color: var(--cyan);
+        }
+
+        .sdivide {
+            width: 70px;
+            height: 4px;
+            background: linear-gradient(to right, var(--red), transparent);
+            margin-bottom: 64px;
+        }
+
+        /* confessions of a villain dossier (DEVELOPER PROFILE) */
+        #developer {
+            background: radial-gradient(circle at 10% 20%, rgba(255, 46, 81, 0.05) 0%, transparent 50%), var(--bg-void);
+            border-top: 1px solid rgba(255, 46, 81, 0.1);
+        }
+
+        .dev-card {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 48px;
+            align-items: center;
+            background: rgba(13, 13, 20, 0.6);
+            border: 1px solid var(--border-glow-red);
+            border-radius: 20px;
+            padding: 48px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .dev-avatar-container {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(135deg, var(--red), var(--cyan));
+            box-shadow: 0 0 30px rgba(255, 46, 81, 0.2);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .dev-avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .dev-role {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.68rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .dev-name {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .dev-bio {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.8;
+            max-width: 580px;
+        }
+
+        .dev-bio strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .dev-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .dev-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+        }
+
+        .dev-link.portfolio {
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            color: var(--cyan);
+        }
+
+        .dev-link.portfolio:hover {
+            background: rgba(0, 240, 255, 0.18);
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+
+        .dev-link.yt {
+            background: rgba(255, 46, 81, 0.08);
+            border: 1px solid rgba(255, 46, 81, 0.3);
+            color: var(--red);
+        }
+
+        .dev-link.yt:hover {
+            background: rgba(255, 46, 81, 0.18);
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(255, 46, 81, 0.2);
+        }
+
+        /* INTERACTIVE CHOICE PLAYGROUND (THE CORE VIBE) */
+        #playground {
+            background: radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.03) 0%, transparent 50%), var(--bg-void);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .play-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 40px;
+            align-items: stretch;
+        }
+
+        .choice-simulation-card {
+            background: rgba(13, 13, 20, 0.6);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 36px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sim-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 18px;
+            margin-bottom: 24px;
+        }
+
+        .sim-tag {
+            background: rgba(0, 240, 255, 0.08);
+            color: var(--cyan);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            padding: 4px 14px;
+            border-radius: 100px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .sim-question {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            margin-bottom: 28px;
+            color: #f0f2f5;
+        }
+
+        .sim-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sim-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 18px 24px;
+            border-radius: 10px;
+            text-align: left;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .sim-btn span {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .sim-btn:hover {
+            background: rgba(0, 240, 255, 0.05);
+            border-color: var(--cyan);
+            transform: translateX(6px);
+        }
+
+        .sim-btn.active {
+            background: rgba(255, 46, 81, 0.08);
+            border-color: var(--red);
+            box-shadow: 0 0 20px rgba(255, 46, 81, 0.1);
+        }
+
+        .sim-btn.active span {
+            background: var(--red);
+            border-color: var(--red);
+            color: #fff;
+        }
+
+        .stats-dashboard {
+            background: rgba(13, 13, 20, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 36px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-dashboard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, var(--cyan), var(--red));
+        }
+
+        .stat-hud-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-hud-title .blink-rec {
+            width: 8px;
+            height: 8px;
+            background: var(--red);
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        .stat-bar-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-bar-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-label-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .stat-name {
+            color: var(--text-light);
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--cyan);
+        }
+
+        .stat-bar-track {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .stat-bar-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--cyan), var(--red));
+            border-radius: 10px;
+            width: 50%;
+            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        .stat-consequence-card {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px dotted rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            min-height: 90px;
+        }
+
+        .stat-consequence-card strong {
+            color: var(--cyan);
+            font-weight: 600;
+        }
+
+        /* WEAPON ARSENAL SHOWCASE */
+        #arsenal {
+            background: var(--bg-void);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .arsenal-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 48px;
+        }
+
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            padding: 12px 30px;
+            border-radius: 100px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .tab-btn:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .tab-btn.active {
+            background: var(--cyan);
+            border-color: var(--cyan);
+            color: #000;
+            font-weight: 900;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.35);
+        }
+
+        .weapon-display {
+            background: rgba(13, 13, 20, 0.6);
+            border: 1px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 48px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+            min-height: 420px;
+        }
+
+        .weapon-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            position: relative;
+            background: radial-gradient(circle at center, rgba(0, 240, 255, 0.06) 0%, transparent 65%);
+            border-radius: 14px;
+            padding: 24px;
+        }
+
+        .weapon-visual img {
+            max-width: 85%;
+            max-height: 250px;
+            object-fit: contain;
+            filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.8));
+            transition: transform 0.4s;
+        }
+
+        .weapon-visual:hover img {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .weapon-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .weapon-tag {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.64rem;
+            color: var(--red);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .weapon-name {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.1;
+        }
+
+        .weapon-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .weapon-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .w-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .w-stat-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .w-stat-bar-track {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .w-stat-bar-fill {
+            height: 100%;
+            background: var(--cyan);
+            box-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+            width: 0;
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* GAMEPLAY VIDEOS */
+        #videos {
+            background: var(--bg-void);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .video-card {
+            background: rgba(13, 13, 20, 0.6);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+        }
+
+        .video-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 240, 255, 0.1);
+        }
+
+        .video-thumb {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #10101b, #050508);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .play-btn {
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 240, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #000;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+
+        .video-card:hover .play-btn {
+            background: var(--cyan);
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.7);
+        }
+
+        .video-thumb-label {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            color: var(--cyan);
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+        }
+
+        .video-info {
+            padding: 20px 24px;
+        }
+
+        .video-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .video-meta {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        /* NARRATIVE & STORY */
+        #story {
+            background: radial-gradient(circle at bottom right, rgba(255, 46, 81, 0.03) 0%, transparent 50%), var(--bg-void);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .story-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 80px;
+        }
+
+        .story-intro p {
+            color: var(--text-muted);
+            line-height: 1.9;
+            font-size: 1.05rem;
+        }
+
+        .story-intro p strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .acts {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            position: relative;
+        }
+
+        .acts::before {
+            content: '';
+            position: absolute;
+            left: 27px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--red), var(--cyan), transparent);
+        }
+
+        .act {
+            display: grid;
+            grid-template-columns: 56px 1fr;
+            gap: 32px;
+            padding: 40px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .act:last-child {
+            border-bottom: none;
+        }
+
+        .act-num {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 900;
+            border: 2px solid var(--red);
+            color: var(--red);
+            background: var(--bg-void);
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+            box-shadow: 0 0 20px rgba(255, 46, 81, 0.2);
+        }
+
+        .act-num.cyan {
+            border-color: var(--cyan);
+            color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        .act-num.gold {
+            border-color: var(--gold);
+            color: var(--gold);
+            box-shadow: 0 0 20px rgba(255, 185, 0, 0.2);
+        }
+
+        .act-label {
+            font-size: 0.68rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .act-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .act-desc {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 0.95rem;
+            margin-bottom: 18px;
+        }
+
+        .act-choices {
+            padding: 18px 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 3px solid var(--cyan);
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .act-choices-label {
+            font-size: 0.68rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--cyan);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .choice {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            font-size: 0.88rem;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        .choice:last-child {
+            margin-bottom: 0;
+        }
+
+        .choice-bullet {
+            color: var(--red);
+            font-weight: 700;
+        }
+
+        .endings {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 64px;
+        }
+
+        .ending-card {
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .ending-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .ending-card.villain {
+            background: rgba(255, 46, 81, 0.04);
+            border-color: rgba(255, 46, 81, 0.2);
+        }
+
+        .ending-card.villain:hover {
+            border-color: var(--red);
+            box-shadow: 0 10px 30px rgba(255, 46, 81, 0.15);
+        }
+
+        .ending-card.ghost {
+            background: rgba(0, 240, 255, 0.04);
+            border-color: rgba(0, 240, 255, 0.2);
+        }
+
+        .ending-card.ghost:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.15);
+        }
+
+        .ending-card.zero {
+            background: rgba(255, 185, 0, 0.03);
+            border-color: rgba(255, 185, 0, 0.15);
+        }
+
+        .ending-card.zero:hover {
+            border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(255, 185, 0, 0.15);
+        }
+
+        .ending-icon {
+            font-size: 2.2rem;
+            margin-bottom: 16px;
+        }
+
+        .ending-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .ending-card.villain .ending-title {
+            color: var(--red);
+        }
+
+        .ending-card.ghost .ending-title {
+            color: var(--cyan);
+        }
+
+        .ending-card.zero .ending-title {
+            color: var(--gold);
+        }
+
+        .ending-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* CORE FEATURES */
+        #features {
+            background: var(--bg-void);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .feat-card {
+            background: rgba(13, 13, 20, 0.6);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .feat-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0, 240, 255, 0.1);
+        }
+
+        .feat-card.span2 {
+            grid-column: span 2;
+        }
+
+        .feat-top {
+            height: 4px;
+            background: linear-gradient(to right, var(--cyan), var(--red));
+        }
+
+        .feat-inner {
+            padding: 36px;
+        }
+
+        .feat-tag {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 100px;
+            font-size: 0.64rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .tag-live {
+            background: rgba(39, 174, 96, 0.08);
+            color: #2ecc71;
+            border: 1px solid rgba(39, 174, 96, 0.25);
+        }
+
+        .tag-wip {
+            background: rgba(255, 185, 0, 0.08);
+            color: var(--gold);
+            border: 1px solid rgba(255, 185, 0, 0.25);
+        }
+
+        .feat-icon {
+            font-size: 2.4rem;
+            margin-bottom: 18px;
+        }
+
+        .feat-name {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .feat-card.span2 .feat-name {
+            font-size: 1.7rem;
+        }
+
+        .feat-desc {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 0.9rem;
+        }
+
+        .feat-bullets {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .feat-bullet {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 0.88rem;
+        }
+
+        .feat-bullet::before {
+            content: '✓';
+            color: var(--cyan);
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* DEVELOPMENT PROGRESS */
+        #progress {
+            background: radial-gradient(circle at 10% 80%, rgba(0, 240, 255, 0.03) 0%, transparent 50%), var(--bg-void);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .progress-parts {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 64px;
+        }
+
+        .prog-card {
+            background: rgba(13, 13, 20, 0.6);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .prog-phase {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.64rem;
+            color: var(--red);
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .prog-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 18px;
+        }
+
+        .prog-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .prog-list li {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .prog-list li::before {
+            content: '✓';
+            color: #2ecc71;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .prog-list li.wip::before {
+            content: '→';
+            color: var(--cyan);
+        }
+
+        /* DEVLOG ACCORDIONS */
+        #devlog {
+            background: var(--bg-void);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .devlog-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .devlog-card {
+            background: rgba(13, 13, 20, 0.6);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .devlog-card:hover,
+        .devlog-card.open {
+            border-color: var(--cyan);
+            background: rgba(20, 20, 32, 0.6);
+        }
+
+        .devlog-header {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 24px;
+            align-items: center;
+            padding: 24px 32px;
+        }
+
+        .devlog-date-box {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.68rem;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            text-align: center;
+            line-height: 1.6;
+            padding: 10px 16px;
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 10px;
+            min-width: 80px;
+            background: rgba(0, 240, 255, 0.03);
+        }
+
+        .devlog-entry-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .devlog-tags-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .dtag {
+            background: rgba(0, 240, 255, 0.06);
+            color: var(--cyan);
+            padding: 3px 12px;
+            border-radius: 100px;
+            font-size: 0.66rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(0, 240, 255, 0.15);
+        }
+
+        .devlog-arrow {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .devlog-card.open .devlog-arrow {
+            transform: rotate(180deg);
+            color: var(--cyan);
+        }
+
+        .devlog-body {
+            display: none;
+            padding: 0 32px 32px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .devlog-card.open .devlog-body {
+            display: block;
+            padding-top: 24px;
+        }
+
+        .devlog-body p {
+            color: var(--text-muted);
+            line-height: 1.9;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .devlog-body p strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .devlog-added-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.64rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 14px;
+            font-weight: 700;
+        }
+
+        .devlog-added ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .devlog-added ul li {
+            display: flex;
+            gap: 10px;
+            color: var(--text-light);
+            font-size: 0.88rem;
+        }
+
+        .devlog-added ul li::before {
+            content: '✓';
+            color: #2ecc71;
+            font-weight: 700;
+        }
+
+        /* TACTICAL ROADMAP TO RELEASE */
+        #upcoming {
+            background: radial-gradient(circle at 90% 20%, rgba(255, 46, 81, 0.03) 0%, transparent 50%), var(--bg-void);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .roadmap {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .rm-col {
+            background: rgba(13, 13, 20, 0.85);
+            padding: 36px 28px;
+            backdrop-filter: blur(10px);
+        }
+
+        .rm-phase {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.62rem;
+            color: var(--red);
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .rm-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .rm-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .rm-col ul li {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .rm-col ul li::before {
+            content: '→';
+            color: var(--cyan);
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* COMMUNITY INTERACTION */
+        #community {
+            background: var(--bg-void);
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .comm-inner {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .comm-inner p {
+            color: var(--text-muted);
+            line-height: 1.9;
+            font-size: 1.05rem;
+            margin-bottom: 40px;
+        }
+
+        .comm-links {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cb {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 36px;
+            border-radius: 100px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.88rem;
+            letter-spacing: 1px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .cb:hover {
+            transform: translateY(-3px);
+        }
+
+        .cb.yt {
+            background: rgba(255, 46, 81, 0.08);
+            border: 1px solid rgba(255, 46, 81, 0.3);
+            color: var(--red);
+        }
+
+        .cb.yt:hover {
+            background: rgba(255, 46, 81, 0.18);
+            box-shadow: 0 0 20px rgba(255, 46, 81, 0.2);
+        }
+
+        .cb.dc {
+            background: rgba(88, 101, 242, 0.08);
+            border: 1px solid rgba(88, 101, 242, 0.3);
+            color: #5865F2;
+        }
+
+        .cb.dc:hover {
+            background: rgba(88, 101, 242, 0.18);
+            box-shadow: 0 0 20px rgba(88, 101, 242, 0.2);
+        }
+
+        .cb.tw {
+            background: rgba(29, 161, 242, 0.08);
+            border: 1px solid rgba(29, 161, 242, 0.3);
+            color: #1DA1F2;
+        }
+
+        .cb.tw:hover {
+            background: rgba(29, 161, 242, 0.18);
+            box-shadow: 0 0 20px rgba(29, 161, 242, 0.2);
+        }
+
+        /* PREMIUM FOOTER */
+        footer {
+            background: #020204;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 48px 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .fl {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: #fff;
+            font-weight: 900;
+            letter-spacing: 4px;
+        }
+
+        .fl span {
+            color: var(--cyan);
+        }
+
+        .fr {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            letter-spacing: 0.5px;
+        }
+
+        .fr a {
+            color: var(--red);
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .fr a:hover {
+            color: var(--cyan);
+        }
+
+        /* SCROLL REVEAL MICRO-ANIMATIONS */
+        .rev {
+            opacity: 0;
+            transform: translateY(32px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .rev.in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Keyframes */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(0.8);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* RESPONSIVE DESIGN BREAKPOINTS */
+        @media (max-width: 1024px) {
+            section {
+                padding: 100px 40px;
+            }
+
+            .dev-card {
+                grid-template-columns: 1fr;
+                gap: 36px;
+                text-align: center;
+                padding: 36px;
+            }
+
+            .dev-avatar-container {
+                margin: 0 auto;
+            }
+
+            .dev-bio {
+                max-width: 100%;
+            }
+
+            .dev-links {
+                flex-direction: row;
+                justify-content: center;
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+
+            .play-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .weapon-display {
+                grid-template-columns: 1fr;
+                gap: 36px;
+                padding: 36px;
+            }
+
+            .weapon-visual {
+                padding: 12px;
+            }
+
+            .videos-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .feat-card.span2 {
+                grid-column: span 1;
+            }
+
+            .roadmap {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                width: 95%;
+                padding: 12px 24px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            section {
+                padding: 80px 20px;
+            }
+
+            .countdown {
+                gap: 8px;
+            }
+
+            .countdown-block {
+                min-width: 70px;
+                padding: 12px 10px;
+            }
+
+            .countdown-num {
+                font-size: 1.7rem;
+            }
+
+            .countdown-unit {
+                font-size: 0.55rem;
+            }
+
+            .videos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .endings {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-parts {
+                grid-template-columns: 1fr;
+            }
+
+            .roadmap {
+                grid-template-columns: 1fr;
+            }
+
+            .devlog-header {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 14px;
+            }
+
+            .devlog-date-box {
+                margin: 0 auto;
+            }
+
+            .devlog-tags-row {
+                justify-content: center;
+            }
+
+            .devlog-arrow {
+                display: none;
+            }
+
+            .devlog-added ul {
+                grid-template-columns: 1fr;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+                padding: 36px 20px;
+            }
+        }
+
+        /* VIDEO MODAL */
+        .vmodal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(2, 2, 4, 0.95);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vmodal-overlay.active {
+            display: flex;
+        }
+
+        .vmodal-box {
+            width: 90%;
+            max-width: 960px;
+            aspect-ratio: 16/9;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.15);
+        }
+
+        .vmodal-box iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .vmodal-close {
+            position: absolute;
+            top: -48px;
+            right: 0;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: rgba(255, 46, 81, 0.1);
+            border: 1px solid rgba(255, 46, 81, 0.3);
+            border-radius: 100px;
+            padding: 8px 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .vmodal-close:hover {
+            background: var(--red);
+            box-shadow: 0 0 15px rgba(255, 46, 81, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Floating Navigation -->
+    <nav id="nav">
+        <a href="#hero" class="nav-logo">ZERO<span>DRAG</span></a>
+        <ul class="nav-links">
+            <li><a href="#playground">Playground</a></li>
+            <li><a href="#arsenal">Weapons</a></li>
+            <li><a href="#videos">Videos</a></li>
+            <li><a href="#story">Story</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#progress">Progress</a></li>
+            <li><a href="#devlog">Devlog</a></li>
+            <li><a href="#community" class="nav-cta">Join Community</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="hero">
+        <div class="hero-content">
+            <div class="hero-eyebrow">
+                <div class="dot"></div>Beta drops July 4, 2026
+            </div>
+            <h1 class="hero-title"><span class="t-cyan">ZERO</span><br><span class="t-white">DRAG</span></h1>
+            <p class="hero-subtitle">Hesitation is Death</p>
+            <p class="hero-tagline">A rain-slicked city. A high-stakes heist. A single choice.<br>Follow Rupesh's descent into a frictionless gangster where <strong>your moves decide his fate</strong>.</p>
+            <p class="dev-credit">Developed Solo by <a href="https://devsunny.netlify.app" target="_blank">Sunny Rajput</a></p>
+
+            <div class="countdown-wrapper">
+                <div class="countdown-label">Frictionless Beta Launching In</div>
+                <div class="countdown">
+                    <div class="countdown-block">
+                        <div class="countdown-num" id="cd-d">00</div>
+                        <div class="countdown-unit">Days</div>
+                    </div>
+                    <div class="countdown-block">
+                        <div class="countdown-num" id="cd-h">00</div>
+                        <div class="countdown-unit">Hours</div>
+                    </div>
+                    <div class="countdown-block">
+                        <div class="countdown-num" id="cd-m">00</div>
+                        <div class="countdown-unit">Mins</div>
+                    </div>
+                    <div class="countdown-block">
+                        <div class="countdown-num" id="cd-s">00</div>
+                        <div class="countdown-unit">Secs</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-btns">
+                <a href="#playground" class="btn-red">🎮 Play Choice Demo</a>
+                <a href="#videos" class="btn-outline">▶ Watch Gameplay</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solo Developer Section (Dossier Theme) -->
+    <section id="developer">
+        <div class="container">
+            <div class="dev-card rev">
+                <div class="dev-avatar-container">
+                    <img src="https://i.ibb.co/F4c422CJ/Whats-App-Image-2026-02-20-at-10-09-10-PM.jpg" alt="Sunny Rajput">
+                </div>
+                <div class="dev-info">
+                    <div class="dev-role">Confidential Solo Dossier</div>
+                    <div class="dev-name">Sunny Rajput</div>
+                    <div class="dev-bio">
+                        Engineering <strong>Zero Drag</strong> entirely from scratch. Coding custom kinematics formulas, hand-baking responsive physics rigs, mapping neon-lit streets, and designing narrative consequence branches — <strong>one solo developer, one uncompromised vision</strong>.
+                    </div>
+                </div>
+                <div class="dev-links">
+                    <a href="https://devsunny.netlify.app" target="_blank" class="dev-link portfolio">🌐 Developer Portfolio</a>
+                    <a href="#" target="_blank" class="dev-link yt">▶ YouTube Devlogs</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE CHOICE PLAYGROUND -->
+    <section id="playground">
+        <div class="container">
+            <span class="stag rev">Try the gameplay</span>
+            <h2 class="stitle rev">Consequence <span>Playground</span></h2>
+            <div class="sdivide rev"></div>
+            
+            <div class="play-grid rev">
+                <!-- Simulation Column -->
+                <div class="choice-simulation-card">
+                    <div class="sim-header">
+                        <div class="sim-tag">DECISION SCENARIO</div>
+                        <div style="font-size:0.75rem;color:var(--cyan);font-weight:600;letter-spacing:1px;" id="sim-act-label">ACT 1 — WITNESS DISCOVERY</div>
+                    </div>
+                    
+                    <p class="sim-question" id="sim-text">You successfully complete Salim Bhai's package drop-off to Vikram inside the dark warehouse, but a local street informant spotted the transaction. The gang wants him silenced immediately.</p>
+                    
+                    <div class="sim-buttons" id="sim-btns">
+                        <button class="sim-btn" onclick="makeChoice(1, 0)">
+                            <span>A</span> Squeal & let the informant go (Stay clean, warn police)
+                        </button>
+                        <button class="sim-btn" onclick="makeChoice(1, 1)">
+                            <span>B</span> Threaten him at gunpoint (First line crossed, gain cartel trust)
+                        </button>
+                        <button class="sim-btn" onclick="makeChoice(1, 2)">
+                            <span>C</span> Pull the trigger (Frictionless elimination, extreme drag removed)
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- HUD Column -->
+                <div class="stats-dashboard">
+                    <div>
+                        <div class="stat-hud-title">
+                            <div class="blink-rec"></div> RUPESH STATUS HUD [SIMULATED]
+                        </div>
+                        
+                        <div class="stat-bar-group">
+                            <div class="stat-bar-container">
+                                <div class="stat-label-row">
+                                    <span class="stat-name">Cartel Trust</span>
+                                    <span class="stat-value" id="val-trust">12%</span>
+                                </div>
+                                <div class="stat-bar-track">
+                                    <div class="stat-bar-fill" id="bar-trust" style="width: 12%;"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-bar-container">
+                                <div class="stat-label-row">
+                                    <span class="stat-name">Sharma's Heat</span>
+                                    <span class="stat-value" id="val-heat">5%</span>
+                                </div>
+                                <div class="stat-bar-track">
+                                    <div class="stat-bar-fill" id="bar-heat" style="width: 5%; background: var(--red);"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-bar-container">
+                                <div class="stat-label-row">
+                                    <span class="stat-name">Gangster Rep</span>
+                                    <span class="stat-value" id="val-rep">0%</span>
+                                </div>
+                                <div class="stat-bar-track">
+                                    <div class="stat-bar-fill" id="bar-rep" style="width: 0%; background: var(--gold);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-consequence-card">
+                        <div id="consequence-text">Select an option on the left to simulate Rupesh's story evolution and witness the tactical changes instantly.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WEAPON SHOWCASE SECTION -->
+    <section id="arsenal">
+        <div class="container">
+            <span class="stag rev">Tactical Firepower</span>
+            <h2 class="stitle rev">Rupesh's <span>Arsenal</span></h2>
+            <div class="sdivide rev"></div>
+            
+            <div class="arsenal-tabs rev">
+                <button class="tab-btn active" onclick="switchWeapon('revolver', this)">R-40 Heavy Revolver</button>
+                <button class="tab-btn" onclick="switchWeapon('carbine', this)">S-94 Tactical Carbine</button>
+                <button class="tab-btn" onclick="switchWeapon('shotgun', this)">B-12 Breaker</button>
+            </div>
+            
+            <div class="weapon-display rev" id="weaponDisplay">
+                <div class="weapon-visual">
+                    <img src="https://i.ibb.co/68gPjTsp/revolver.png" alt="R-40 Heavy Revolver" id="weaponImg" onerror="this.src='https://i.ibb.co/n8KJPLHm/Chat-GPT-Image-Feb-28-2026-03-45-32-PM.png'">
+                </div>
+                <div class="weapon-info">
+                    <span class="weapon-tag" id="wTag">Act 1 Starter Weapon</span>
+                    <h3 class="weapon-name" id="wName">R-40 Heavy Revolver</h3>
+                    <p class="weapon-desc" id="wDesc">Rupesh's first choice. A massive, reliable 6-shot iron cylinder found inside an abandoned warehouse toolbox. Delivers brutal kinetic hitscan damage at close quarters.</p>
+                    
+                    <div class="weapon-stats">
+                        <div class="w-stat">
+                            <div class="w-stat-labels">
+                                <span>Tactical Stop Power</span>
+                                <span id="statVal1">85%</span>
+                            </div>
+                            <div class="w-stat-bar-track">
+                                <div class="w-stat-bar-fill" id="statBar1" style="width: 85%;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="w-stat">
+                            <div class="w-stat-labels">
+                                <span>Zero-drag handling</span>
+                                <span id="statVal2">60%</span>
+                            </div>
+                            <div class="w-stat-bar-track">
+                                <div class="w-stat-bar-fill" id="statBar2" style="width: 60%;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="w-stat">
+                            <div class="w-stat-labels">
+                                <span>Fire Rate</span>
+                                <span id="statVal3">30%</span>
+                            </div>
+                            <div class="w-stat-bar-track">
+                                <div class="w-stat-bar-fill" id="statBar3" style="width: 30%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GAMEPLAY VIDEOS -->
+    <section id="videos">
+        <div class="container">
+            <span class="stag rev">Alpha gameplay footage</span>
+            <h2 class="stitle rev">Tactical <span>Intel</span></h2>
+            <div class="sdivide rev"></div>
+            
+            <div class="videos-grid">
+                <div class="video-card rev" onclick="openVideoModal()">
+                    <div class="video-thumb" style="background-image:url('https://i.ibb.co/RTy7MRbW/Chat-GPT-Image-Feb-28-2026-03-34-12-PM.png'); background-size:cover; background-position:center;">
+                        <div class="play-btn">&#9654;</div>
+                        <div class="video-thumb-label">MISSION 1 WALKTHROUGH</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">Warehouse Delivery Walkthrough & Dialogues</div>
+                        <div class="video-meta">Salim Bhai &rarr; Vikram parcel exchange &nbsp;&middot;&nbsp; Alpha Build</div>
+                    </div>
+                </div>
+                
+                <div class="video-card rev" style="cursor:not-allowed;">
+                    <div class="video-thumb" style="background-image:url('https://i.ibb.co/n8KJPLHm/Chat-GPT-Image-Feb-28-2026-03-45-32-PM.png'); background-size:cover; background-position:center;">
+                        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; background:rgba(0,0,0,0.5);">
+                            <div style="font-size:1.8rem;">🔒</div>
+                            <div style="background:rgba(255,46,81,0.15); border:1px solid rgba(255,46,81,0.4); color:var(--red); padding:4px 14px; border-radius:100px; font-size:0.6rem; font-weight:700; letter-spacing:2px; text-transform:uppercase;">Coming Soon</div>
+                        </div>
+                        <div class="video-thumb-label">CITY PARKOUR RIG</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">Frictionless Movement & Custom Kinematic Jumps</div>
+                        <div class="video-meta">High-speed back-alley tests &nbsp;&middot;&nbsp; Dropping Soon</div>
+                    </div>
+                </div>
+                
+                <div class="video-card rev" style="cursor:not-allowed;">
+                    <div class="video-thumb" style="background-image:url('https://i.ibb.co/LD9BWSvz/Chat-GPT-Image-Feb-28-2026-03-48-03-PM.png'); background-size:cover; background-position:center;">
+                        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; background:rgba(0,0,0,0.5);">
+                            <div style="font-size:1.8rem;">🔒</div>
+                            <div style="background:rgba(255,46,81,0.15); border:1px solid rgba(255,46,81,0.4); color:var(--red); padding:4px 14px; border-radius:100px; font-size:0.6rem; font-weight:700; letter-spacing:2px; text-transform:uppercase;">Coming Soon</div>
+                        </div>
+                        <div class="video-thumb-label">DEVLOG #1</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">Building a Custom Physics FPS Solo in Unity</div>
+                        <div class="video-meta">Development process logs &nbsp;&middot;&nbsp; Coming to YouTube</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NARRATIVE ACTS -->
+    <section id="story">
+        <div class="container">
+            <div class="story-intro rev">
+                <span class="stag">The Story Narrative</span>
+                <h2 class="stitle">Nobody Wakes Up Deciding To Become A Villain. <span>It Happens One Choice At A Time.</span></h2>
+                <div class="sdivide"></div>
+                <p>Meet <strong>Rupesh</strong> — jobless, debt-ridden, desperate. When <strong>Salim Bhai</strong> hires him for a closed package delivery inside a dark alley warehouse, he doesn't ask questions. But when he meets the volatile cartel distributor <strong>Vikram</strong> and learns about <strong>"Zero"</strong> — a highly illegal focus amplifier circulating the city — there's no turning back. From that night on, every shootout, every negotiation, and every dead syndicate enforcer pushes Rupesh closer to the ultimate friction-free state.</p>
+            </div>
+            
+            <div class="acts">
+                <div class="act rev">
+                    <div class="act-num">01</div>
+                    <div>
+                        <div class="act-label">Act 1 — Missions 1–3</div>
+                        <div class="act-title">"Just This Once"</div>
+                        <div class="act-desc">A simple package exchange inside an abandoned rail yard. Vikram reveals the true horror of the Zero network. When a local street contact spots the trade, Rupesh faces his first real crucible.</div>
+                        <div class="act-choices">
+                            <div class="act-choices-label">⚡ Story Cruxes</div>
+                            <div class="choice"><span class="choice-bullet">🟡</span> Squeal to Sharma — maintain morals, forfeit gang trust, receive protection.</div>
+                            <div class="choice"><span class="choice-bullet">🔴</span> Intimidate the witness — enter the gang network, gain reputation.</div>
+                            <div class="choice"><span class="choice-bullet">🔴</span> Eliminate the target — drop your emotional drag. Real violence begins.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="act rev">
+                    <div class="act-num cyan">02</div>
+                    <div>
+                        <div class="act-label">Act 2 — Missions 4–7</div>
+                        <div class="act-title">"The Network expansion"</div>
+                        <div class="act-desc">Vikram takes Rupesh deep inside safehouses and distribution hubs. Meanwhile, **Inspector Sharma** launches a heavy dragnet to capture Rupesh. Loyalty is tested from both ends.</div>
+                        <div class="act-choices">
+                            <div class="act-choices-label">⚡ Story Cruxes</div>
+                            <div class="choice"><span class="choice-bullet">🟡</span> Double-cross Vikram — wire-taps for Sharma, extremely high hazard.</div>
+                            <div class="choice"><span class="choice-bullet">🔴</span> Wipe out Sharma's leads — solidify position as an elite syndicate enforcer.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="act rev">
+                    <div class="act-num gold">03</div>
+                    <div>
+                        <div class="act-label">Act 3 — Missions 8–12</div>
+                        <div class="act-title">"Zero or Hero"</div>
+                        <div class="act-desc">The hidden cartel boss issues an ultimatum. Standing at the high-rise peak of a concrete jungle, Rupesh makes his final play against the syndicates and the law.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="endings rev">
+                <div class="ending-card villain">
+                    <div class="ending-icon">👑</div>
+                    <div class="ending-title">The Villain</div>
+                    <div class="ending-desc">Launder Sharma. Seize the entire syndicate throne. Turn the streets of India into your direct empire. You hold the city by the throat.</div>
+                </div>
+                
+                <div class="ending-card ghost">
+                    <div class="ending-icon">👻</div>
+                    <div class="ending-title">The Ghost</div>
+                    <div class="ending-desc">Dismantle the cartel from within. Turn in Vikram and Salim. Vanish forever without a name, record, or dollar. Only rain remembers you.</div>
+                </div>
+                
+                <div class="ending-card zero">
+                    <div class="ending-icon">💀</div>
+                    <div class="ending-title">The Zero</div>
+                    <div class="ending-desc">Consume the focus-drug yourself to escape hit squads. Complete mental collapse — you didn't conquer the drag. You became the drag.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CORE FEATURES SECTION -->
+    <section id="features">
+        <div class="container">
+            <span class="stag rev">Engine Capabilities</span>
+            <h2 class="stitle rev">Core <span>Features</span></h2>
+            <div class="sdivide rev"></div>
+            
+            <div class="features-grid">
+                <div class="feat-card span2 rev">
+                    <div class="feat-top"></div>
+                    <div class="feat-inner">
+                        <span class="feat-tag tag-live">✅ Live in Alpha</span>
+                        <div class="feat-icon">⚡</div>
+                        <div class="feat-name">Frictionless Newtonian Locomotion & Physics Jumps</div>
+                        <div class="feat-desc">Built completely on custom mathematics using a manual Unity CharacterController. Experience instant WASD movement, split-body mouse looks with vertical pitch locks, and precise kinematic leaps mapped to $u = \sqrt{h \times -2 \times g}$ equations. Zero delay, zero drag, infinite kinetic speed.</div>
+                        <div class="feat-bullets">
+                            <div class="feat-bullet">Frame-rate independent movement physics using smoothed Time.deltaTime</div>
+                            <div class="feat-bullet">Exorcist clamp: strictly locks camera vertical yaw at $+90^{\circ}/-90^{\circ}$</div>
+                            <div class="feat-bullet">Precision sphere-cast ground tests utilizing custom LayerMasks</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="feat-card rev">
+                    <div class="feat-top"></div>
+                    <div class="feat-inner">
+                        <span class="feat-tag tag-live">✅ Live in Alpha</span>
+                        <div class="feat-icon">💥</div>
+                        <div class="feat-name">Cinematic Fracture Destruction</div>
+                        <div class="feat-desc">Deliver instant physical impact. On lethal gunshots, solid enforcer models instantly swap to pre-fractured mesh structures. An explosion force radial blow-out spreads shards across 3D space.</div>
+                    </div>
+                </div>
+                
+                <div class="feat-card rev">
+                    <div class="feat-top"></div>
+                    <div class="feat-inner">
+                        <span class="feat-tag tag-live">✅ Live in Alpha</span>
+                        <div class="feat-icon">🎯</div>
+                        <div class="feat-name">Hitscan Shooting & Surface Particles</div>
+                        <div class="feat-desc">Project mathematically exact hitscan rays. Contact points generate concrete/blood sparks oriented dynamically straight out of surfaces using LookRotation normal vectors.</div>
+                    </div>
+                </div>
+                
+                <div class="feat-card rev">
+                    <div class="feat-top"></div>
+                    <div class="feat-inner">
+                        <span class="feat-tag tag-live">✅ Live in Alpha</span>
+                        <div class="feat-icon">👑</div>
+                        <div class="feat-name">ScoreManager Singleton Economy</div>
+                        <div class="feat-desc">Decoupled manager counting street enemies dynamically using tag filters on start. Handles real-time HUD TextMeshPro updates, laundering payouts, and XP states.</div>
+                    </div>
+                </div>
+                
+                <div class="feat-card rev">
+                    <div class="feat-top"></div>
+                    <div class="feat-inner">
+                        <span class="feat-tag tag-live">✅ Live in Alpha</span>
+                        <div class="feat-icon">🗣️</div>
+                        <div class="feat-name">Typewriter Dialogue Manager</div>
+                        <div class="feat-desc">Fluid typewriter text scrolling with speaker definitions, dialogue skipping, and action callbacks to trigger safehouse doors and npc pathing sweeps.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEVELOPMENT TIMELINE -->
+    <section id="progress">
+        <div class="container">
+            <span class="stag rev">Code Milestones</span>
+            <h2 class="stitle rev">Development <span>Journey</span></h2>
+            <div class="sdivide rev"></div>
+            
+            <div class="progress-parts">
+                <div class="prog-card rev">
+                    <div class="prog-phase">Phase 1 — foundation</div>
+                    <div class="prog-title">🏗️ Physics Rig & Controller</div>
+                    <ul class="prog-list">
+                        <li>Unity project setups & standard inputs</li>
+                        <li>CharacterController locomotion rigs</li>
+                        <li>Exorcist yaw/pitch split cameras</li>
+                        <li>CheckSphere ground offsets</li>
+                        <li>Kinematic displacement jump math</li>
+                        <li>Manual terminal fall gravity resets</li>
+                    </ul>
+                </div>
+                
+                <div class="prog-card rev">
+                    <div class="prog-phase">Phase 2 — gameplay</div>
+                    <div class="prog-title">⚙️ Hitscan & Architecture</div>
+                    <ul class="prog-list">
+                        <li>RifleController hitscan rays</li>
+                        <li>Normal spark projection math</li>
+                        <li>ScoreManager Singleton integrations</li>
+                        <li>EnemyHealth damage interfaces</li>
+                        <li>Fake Switch mesh fracture rigs</li>
+                        <li>Radial explosion forces on shards</li>
+                    </ul>
+                </div>
+                
+                <div class="prog-card rev">
+                    <div class="prog-phase">Phase 3 — story & polish</div>
+                    <div class="prog-title">🚀 Dialogue & Narrative Flow</div>
+                    <ul class="prog-list">
+                        <li>Typewriter text dialogue managers</li>
+                        <li>Salim Bhai to Vikram mission sequence</li>
+                        <li>Dynamic waypoint markers</li>
+                        <li>NPC blocking/resuming path AI</li>
+                        <li class="wip" style="color: var(--cyan);">Street mission 2 ambient ambushes (WIP)</li>
+                        <li class="wip" style="color: var(--cyan);">Bounty save/load persistence (WIP)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ACCORDION DEVLOG -->
+    <section id="devlog">
+        <div class="container">
+            <span class="stag rev">Confessions of a developer</span>
+            <h2 class="stitle rev">Developer <span>Logs</span></h2>
+            <div class="sdivide rev"></div>
+            
+            <div class="devlog-grid">
+                <div class="devlog-card rev" onclick="toggleDev(this)">
+                    <div class="devlog-header">
+                        <div class="devlog-date-box">FEB<br>28<br>2026</div>
+                        <div class="devlog-meta">
+                            <div class="devlog-entry-title">Dialogue System Live — Vikram's Zero Reveal Complete</div>
+                            <div class="devlog-tags-row">
+                                <span class="dtag">Dialogue</span>
+                                <span class="dtag">Mission 1</span>
+                                <span class="dtag">Story NPC</span>
+                                <span class="dtag">Path AI</span>
+                            </div>
+                        </div>
+                        <div class="devlog-arrow">▼</div>
+                    </div>
+                    <div class="devlog-body">
+                        <p>A huge step forward. Zero Drag transitioned from a basic physics sandbox into a **fully interactive story experience** today. The custom typewriter dialogue system is now operational, displaying speaker names and firing callbacks on dialogue completion to unlock warehouse doors.</p>
+                        <p><strong>Salim Bhai</strong> coordinates the opening dialogue with Rupesh, offering cash for a closed container. **Vikram's** meeting inside the rail yards is an 18-line cinematic asset, introducing the "Zero" focus substance with the cold prompt: <em>"Makes things quiet. Inside your head."</em></p>
+                        <p>Additionally, I built <strong>NPC blocking AI</strong>: civilian/gang agents now stop dynamically if the player obstructs their path, using dot product direction tests to trigger agent halts before resuming their patrol loops.</p>
+                        <div class="devlog-added">
+                            <div class="devlog-added-title">SHIPPED TODAY</div>
+                            <ul>
+                                <li>DialogueLine struct models</li>
+                                <li>Typewriter character scrolls</li>
+                                <li>Dialogue end action callbacks</li>
+                                <li>Vikram 18-line dialogue tree</li>
+                                <li>Forward obstacle angle detections</li>
+                                <li>NPC stop/resume NavMesh loops</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="devlog-card rev" onclick="toggleDev(this)">
+                    <div class="devlog-header">
+                        <div class="devlog-date-box">FEB<br>15<br>2026</div>
+                        <div class="devlog-meta">
+                            <div class="devlog-entry-title">Physics & Impact Core Complete — Swapped Solid for Shards</div>
+                            <div class="devlog-tags-row">
+                                <span class="dtag">Physics</span>
+                                <span class="dtag">Fracture</span>
+                                <span class="dtag">ScoreManager</span>
+                                <span class="dtag">Hitscan</span>
+                            </div>
+                        </div>
+                        <div class="devlog-arrow">▼</div>
+                    </div>
+                    <div class="devlog-body">
+                        <p>Focused on combat loops. Deployed the **Fake Switch deconstruction technique** to replace classic ragdolls with highly rewarding physical shatters. When a thug's health goes to zero, the main GameObject is immediately disabled, instantiating a broken mesh prefab consisting of 12 separate colliders. An explosion force is broadcast, pushing the fragments outward dynamically.</p>
+                        <p>The global **ScoreManager Singleton** was wired to dynamically track combat states. It gathers all hostile tags on scene load, removing the need for manual inspector references and preventing UI desyncs.</p>
+                        <div class="devlog-added">
+                            <div class="devlog-added-title">SHIPPED TODAY</div>
+                            <ul>
+                                <li>Fake Switch deconstruction logic</li>
+                                <li>AddExplosionForce radial offsets</li>
+                                <li>Hitscan rays and custom sound clips</li>
+                                <li>ScoreManager static singletons</li>
+                                <li>Impact normal spark rotations</li>
+                                <li>TextMeshPro HUD updates</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TACTICAL ROADMAP -->
+    <section id="upcoming">
+        <div class="container">
+            <span class="stag rev">Tactical Calendar</span>
+            <h2 class="stitle rev">Roadmap To <span>Release</span></h2>
+            <div class="sdivide rev"></div>
+            
+            <div class="roadmap rev">
+                <div class="rm-col">
+                    <div class="rm-phase">Current — Alpha</div>
+                    <div class="rm-title">Warehouse Delivery</div>
+                    <ul>
+                        <li>Frictionless WASD</li>
+                        <li>Kinematic jumps</li>
+                        <li>Hitscan firing</li>
+                        <li>Dialogue typewriter</li>
+                        <li>Mesh shatters</li>
+                        <li>Beta v1.0 Launch</li>
+                    </ul>
+                </div>
+                
+                <div class="rm-col">
+                    <div class="rm-phase">Phase 2 — v0.2</div>
+                    <div class="rm-title">Backstreet Ambush</div>
+                    <ul>
+                        <li>Mission 2 design</li>
+                        <li>Inspector Sharma AI</li>
+                        <li>Player choice cruxes</li>
+                        <li>JSON progress saves</li>
+                        <li>Reputation multipliers</li>
+                        <li>Police threat meters</li>
+                    </ul>
+                </div>
+                
+                <div class="rm-col">
+                    <div class="rm-phase">Phase 3 — v0.5</div>
+                    <div class="rm-title">Metropolis Expansion</div>
+                    <ul>
+                        <li>Urban parkour sliding</li>
+                        <li>City-center map build</li>
+                        <li>Civilian traffic AIs</li>
+                        <li>Bounty cash upgrades</li>
+                        <li>Safehouse workbenches</li>
+                        <li>Advanced SMG/Shotguns</li>
+                    </ul>
+                </div>
+                
+                <div class="rm-col">
+                    <div class="rm-phase">Phase 4 — v1.0</div>
+                    <div class="rm-title">Final RETRIBUTION</div>
+                    <ul>
+                        <li>12 core story heists</li>
+                        <li>3 complete endings</li>
+                        <li>Boss encounter designs</li>
+                        <li>Steam wrapper setups</li>
+                        <li>Custom audio mixes</li>
+                        <li>Modding toolkit releases</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMMUNITY SECTION -->
+    <section id="community">
+        <div class="container">
+            <div class="comm-inner">
+                <span class="stag rev">Enter the syndicate</span>
+                <h2 class="stitle rev">Follow the Build.<br>Shape the <span>Empire.</span></h2>
+                <div class="sdivide rev" style="margin:0 auto 36px"></div>
+                <p class="rev">Zero Drag is created completely in the public eye by <strong>Sunny Rajput</strong>. Every script change, every dialogue record, and every physics optimization is shared live. Your feedback directly governs what turf get unlocked and what weaponry gets forged next.</p>
+                
+                <div class="comm-links rev">
+                    <a href="#" class="cb yt">▶ YouTube Devlogs</a>
+                    <a href="#" class="cb dc">💬 Discord Server</a>
+                    <a href="#" class="cb tw">🐦 Follow on X</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="fl">ZERO<span>DRAG</span></div>
+        <div class="fr">© 2026 ZERO DRAG — A Crime Thriller &nbsp;·&nbsp; Shipped Solo by <a href="https://devsunny.netlify.app" target="_blank">Sunny Rajput</a></div>
+    </footer>
+
+    <!-- Video Modal Container -->
+    <div class="vmodal-overlay" id="vmodal" onclick="closeVideoModal()">
+        <div class="vmodal-box" onclick="event.stopPropagation()">
+            <div class="vmodal-close" onclick="closeVideoModal()">✕ Close</div>
+            <iframe id="missionIframe" src="https://procodefy.strp2p.live/#nj3bde" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+        </div>
+    </div>
+
+    <!-- Scripting for Mechanics & Interactive Playground -->
+    <script>
+        // Floating Nav scroll shrink
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('nav');
+            if (window.scrollY > 40) {
+                nav.classList.add('shrink');
+            } else {
+                nav.classList.remove('shrink');
+            }
+        });
+
+        // Countdowns to Release Date
+        function tick() {
+            const target = new Date('2026-07-04T00:00:00+05:30').getTime();
+            const diff = target - Date.now();
+            if (diff <= 0) {
+                document.getElementById('cd-d').textContent = "00";
+                document.getElementById('cd-h').textContent = "00";
+                document.getElementById('cd-m').textContent = "00";
+                document.getElementById('cd-s').textContent = "00";
+                return;
+            }
+            const d = Math.floor(diff / 864e5);
+            const h = Math.floor((diff % 864e5) / 36e5);
+            const m = Math.floor((diff % 36e5) / 6e4);
+            const s = Math.floor((diff % 6e4) / 1e3);
+
+            document.getElementById('cd-d').textContent = String(d).padStart(2, '0');
+            document.getElementById('cd-h').textContent = String(h).padStart(2, '0');
+            document.getElementById('cd-m').textContent = String(m).padStart(2, '0');
+            document.getElementById('cd-s').textContent = String(s).padStart(2, '0');
+        }
+        tick();
+        setInterval(tick, 1000);
+
+        // Playground Simulation Logic
+        const playgroundData = {
+            act1: {
+                label: "ACT 1 — WITNESS DISCOVERY",
+                question: "You successfully complete Salim Bhai's package drop-off to Vikram inside the dark warehouse, but a local street informant spotted the transaction. The gang wants him silenced immediately.",
+                choices: [
+                    { text: "A: Squeal & let the informant go (Stay clean, warn police)", trust: 5, heat: 45, rep: 0, desc: "Rupesh warns the informant and makes a secret call to Inspector Sharma. Cartel trust plummets. <strong>Sharma's Heat skyrockets to 45%</strong> as they start surveillance. Safe, but now you are a marked rat." },
+                    { text: "B: Threaten him at gunpoint (First line crossed, gain cartel trust)", trust: 40, heat: 18, rep: 25, desc: "Rupesh corners the informant, pushing a steel gun barrel into his chin. He swears silence. <strong>Cartel Trust jumps to 40%</strong>, and you earn <strong>25% Gangster Rep</strong>. Sharma receives anonymous tips, increasing heat to 18%." },
+                    { text: "C: Pull the trigger (Frictionless elimination, extreme drag removed)", trust: 80, heat: 10, rep: 60, desc: "Zero drag. Zero hesitation. Rupesh pulls the trigger in the rain. Informant is eliminated. <strong>Cartel Trust explodes to 80%</strong>, rep raises to <strong>60%</strong>. No witness remains, keeping <strong>Sharma's Heat at a low 10%</strong>. Your humanity is fading." }
+                ]
+            },
+            act2: {
+                label: "ACT 2 — SHARMA'S TRAP",
+                question: "Inspector Sharma tracks down Rupesh's safehouse. He locks the room down and offers a deal: wire Vikram's next major delivery at the rail docks, or face 10 years in Tihar jail.",
+                choices: [
+                    { text: "A: Double-cross Vikram & wear the wire (Work for Sharma)", trust: 15, heat: 5, rep: 30, desc: "Rupesh accepts the wire. Cartel trust drops to 15% as Vikram senses hesitation. However, <strong>Sharma's active heat drops to 5%</strong> as he marks you as an asset. You are playing a deadly double game." },
+                    { text: "B: Feed Vikram fake police patrol routes (Double-cross Sharma)", trust: 90, heat: 60, rep: 75, desc: "Rupesh feeds Vikram false dispatch schedules, allowing the cartel to secure a 10M cash haul. <strong>Cartel Trust peaks at 90%</strong> and <strong>Rep reaches 75%</strong>. Sharma realizes you lied; <strong>Heat flares to 60%</strong>. Tactical squads are preparing raids." },
+                    { text: "C: Ambush Sharma's strike team (Wipe out the leads)", trust: 95, heat: 95, rep: 95, desc: "No witnesses. Rupesh coordinates an ambush, wiping out the squad in a rain-soaked shootout. <strong>All gangster metrics reach 95%</strong>. You are a street kingpin. But <strong>Sharma's Heat reaches a critical 95%</strong>. It is now all-out war." }
+                ]
+            }
+        };
+
+        let currentAct = 'act1';
+
+        function makeChoice(actNum, choiceIndex) {
+            const data = playgroundData[currentAct];
+            const choice = data.choices[choiceIndex];
+            
+            // Set HUD Stats
+            document.getElementById('val-trust').textContent = choice.trust + '%';
+            document.getElementById('bar-trust').style.width = choice.trust + '%';
+            
+            document.getElementById('val-heat').textContent = choice.heat + '%';
+            document.getElementById('bar-heat').style.width = choice.heat + '%';
+            
+            document.getElementById('val-rep').textContent = choice.rep + '%';
+            document.getElementById('bar-rep').style.width = choice.rep + '%';
+            
+            // Show Consequence text
+            document.getElementById('consequence-text').innerHTML = choice.desc;
+
+            // Highlight chosen button
+            const buttons = document.querySelectorAll('#sim-btns .sim-btn');
+            buttons.forEach((btn, index) => {
+                if (index === choiceIndex) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Transition to Act 2 simulation after delay if they did Act 1
+            if (currentAct === 'act1') {
+                setTimeout(() => {
+                    currentAct = 'act2';
+                    setupSimulationUI();
+                }, 4000);
+            } else {
+                // Return to Act 1
+                setTimeout(() => {
+                    currentAct = 'act1';
+                    setupSimulationUI();
+                }, 7000);
+            }
+        }
+
+        function setupSimulationUI() {
+            const data = playgroundData[currentAct];
+            document.getElementById('sim-act-label').textContent = data.label;
+            document.getElementById('sim-text').textContent = data.question;
+            
+            const btnContainer = document.getElementById('sim-btns');
+            btnContainer.innerHTML = '';
+            
+            const alpha = ['A', 'B', 'C'];
+            data.choices.forEach((c, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'sim-btn';
+                btn.onclick = () => makeChoice(currentAct === 'act1' ? 1 : 2, index);
+                btn.innerHTML = `<span>${alpha[index]}</span> ${c.text.split('(')[0]}`;
+                btnContainer.appendChild(btn);
+            });
+        }
+        setupSimulationUI();
+
+        // Weapon Showcase Switch Logic
+        const weapons = {
+            revolver: {
+                tag: "Act 1 Starter Weapon",
+                name: "R-40 Heavy Revolver",
+                desc: "Rupesh's first choice. A massive, reliable 6-shot iron cylinder found inside an abandoned warehouse toolbox. Delivers brutal kinetic hitscan damage at close quarters.",
+                img: "https://i.ibb.co/68gPjTsp/revolver.png",
+                stat1: "85%",
+                stat2: "60%",
+                stat3: "30%"
+            },
+            carbine: {
+                tag: "Act 2 Tactical Weapon",
+                name: "S-94 Tactical Carbine",
+                desc: "Secured from a local black market smuggler. Equipped with rapid-fire capability, precise recoil recovery springs, and an integrated red dot scope. Fits Rupesh's frictionless play style perfectly.",
+                img: "https://i.ibb.co/N6v41X4/carbine.png",
+                stat1: "65%",
+                stat2: "80%",
+                stat3: "75%"
+            },
+            shotgun: {
+                tag: "Syndicate Heavy Shotgun",
+                name: "B-12 Breaker",
+                desc: "Looted from the trunk of a cartel enforcer's sedan. A devastating pump-action weapon that completely vaporizes cover. Perfect for sweeping narrow warehouse corridors and tight safehouses.",
+                img: "https://i.ibb.co/L9HwVpt/shotgun.png",
+                stat1: "95%",
+                stat2: "45%",
+                stat3: "20%"
+            }
+        };
+
+        function switchWeapon(wKey, btn) {
+            const w = weapons[wKey];
+            
+            // Remove active classes
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Set details with fade animations
+            const display = document.getElementById('weaponDisplay');
+            display.style.opacity = '0.3';
+            display.style.transform = 'translateY(10px)';
+            display.style.transition = 'all 0.3s ease';
+
+            setTimeout(() => {
+                document.getElementById('wTag').textContent = w.tag;
+                document.getElementById('wName').textContent = w.name;
+                document.getElementById('wDesc').innerHTML = w.desc;
+                document.getElementById('weaponImg').src = w.img;
+                
+                // Update stats
+                document.getElementById('statVal1').textContent = w.stat1;
+                document.getElementById('statBar1').style.width = w.stat1;
+                
+                document.getElementById('statVal2').textContent = w.stat2;
+                document.getElementById('statBar2').style.width = w.stat2;
+                
+                document.getElementById('statVal3').textContent = w.stat3;
+                document.getElementById('statBar3').style.width = w.stat3;
+
+                display.style.opacity = '1';
+                display.style.transform = 'none';
+            }, 300);
+        }
+
+        // Devlog toggler
+        function toggleDev(card) {
+            card.classList.toggle('open');
+        }
+
+        // Modal triggers for walks
+        function openVideoModal() {
+            document.getElementById('vmodal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeVideoModal() {
+            document.getElementById('vmodal').classList.remove('active');
+            document.body.style.overflow = '';
+            const iframe = document.getElementById('missionIframe');
+            iframe.src = iframe.src; // stops playback
+        }
+
+        // Intersections Scroll Reveals
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((e, index) => {
+                if (e.isIntersecting) {
+                    setTimeout(() => {
+                        e.target.classList.add('in');
+                    }, index * 60);
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.05 });
+
+        document.querySelectorAll('.rev').forEach(el => observer.observe(el));
+    </script>
+</body>
+
+</html>
