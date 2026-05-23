@@ -1,7 +1,7 @@
 # 🕶️ ZERO DRAG — A Crime Thriller FPS
 Developed Solo by **Sunny Rajput** (Lead Architect & Programmer)
 
-[![Zero Drag Pitch](https://img.shields.io/badge/Official-Website-00f0ff?style=for-the-badge&logo=html5)](./Website/index.html)
+[![Zero Drag Pitch](https://img.shields.io/badge/Official-Website-00f0ff?style=for-the-badge&logo=html5)](https://zerodrag.netlify.app/)
 [![Read GDD](https://img.shields.io/badge/Documentation-GDD-ff2e51?style=for-the-badge&logo=markdown)](./GDD.md)
 
 ---
@@ -57,7 +57,7 @@ Explore the design layouts, story acts, and front-end showcases here:
 ## 🔨 How to Get Started
 
 ### 1. Previews & Marketing Site
-To inspect the gorgeous web landing page, open **[index.html](./Website/index.html)** in a browser. It is fully interactive!
+To inspect the gorgeous web landing page, visit the live deployment at **[zerodrag.netlify.app](https://zerodrag.netlify.app/)** or open the local source file **[index.html](./Website/index.html)** in a browser. It is fully interactive!
 
 ### 2. Launching in Unity Editor
 1. Open **Unity Hub** and add the project root directory.
